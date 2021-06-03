@@ -16,11 +16,8 @@ public abstract class ArenaManager implements Initializer {
                 .ifPresent(features -> features.forEach(feature -> featureMap.put(feature.getClass(), feature)));
         Optional.ofNullable(loadGameStates())
                 .ifPresent(gameStates -> gameStates.forEach(gameState -> gameStateMap.put(gameState.getClass(), gameState)));
-        Optional.ofNullable(loadArenas())
-                .ifPresent(arenaList::addAll);
         featureMap.values().forEach(Initializer::init);
         gameStateMap.values().forEach(Initializer::init);
-        arenaList.forEach(Initializer::init);
     }
 
     @Override
@@ -95,5 +92,25 @@ public abstract class ArenaManager implements Initializer {
      */
     public List<Arena> getAllArenas() {
         return Collections.unmodifiableList(arenaList);
+    }
+
+    /**
+     * Add an arena
+     *
+     * @param arena the arena
+     */
+    public void addArena(Arena arena) {
+        arena.init();
+        this.arenaList.add(arena);
+    }
+
+    /**
+     * Remove an arena
+     *
+     * @param arena the arena
+     */
+    public void removeArena(Arena arena) {
+        arena.clear();
+        this.arenaList.remove(arena);
     }
 }
