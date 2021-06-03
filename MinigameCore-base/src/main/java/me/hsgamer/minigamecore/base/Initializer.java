@@ -1,4 +1,4 @@
-package me.hsgamer.minigamecore.base.interfaces;
+package me.hsgamer.minigamecore.base;
 
 public interface Initializer {
     void init();

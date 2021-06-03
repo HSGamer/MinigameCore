@@ -1,9 +1,4 @@
-package me.hsgamer.minigamecore.base.arena;
-
-import me.hsgamer.minigamecore.base.feature.Feature;
-import me.hsgamer.minigamecore.base.interfaces.Initializer;
-import me.hsgamer.minigamecore.base.manager.ArenaManager;
-import me.hsgamer.minigamecore.base.state.GameState;
+package me.hsgamer.minigamecore.base;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
