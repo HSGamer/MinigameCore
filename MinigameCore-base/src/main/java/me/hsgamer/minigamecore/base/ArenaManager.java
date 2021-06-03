@@ -30,11 +30,11 @@ public abstract class ArenaManager implements Initializer {
         featureMap.clear();
     }
 
-    public abstract List<GameState> loadGameStates();
+    protected abstract List<GameState> loadGameStates();
 
-    public abstract List<Feature> loadFeatures();
+    protected abstract List<Feature> loadFeatures();
 
-    public abstract List<Arena> loadArenas();
+    protected abstract List<Arena> loadArenas();
 
     public <T extends GameState> T getGameState(Class<T> gameStateClass) {
         GameState gameState = gameStateMap.get(gameStateClass);
