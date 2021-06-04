@@ -28,6 +28,7 @@
         <dependency>
             <groupId>me.HSGamer</groupId>
             <artifactId>MinigameCore-base</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

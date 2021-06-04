@@ -15,12 +15,7 @@
         <dependency>
             <groupId>me.HSGamer</groupId>
             <artifactId>MinigameCore-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>MinigameCore-base</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
