@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The feature handler for each arena
+ * The {@link Feature} handler for each arena
  *
- * @param <T> the type of the feature being handled
+ * @param <T> the type of the {@link Feature} being handled
  */
 public abstract class ArenaFeature<T extends Feature> implements Feature {
     private final Map<Arena, T> arenaFeatureMap = new ConcurrentHashMap<>();
