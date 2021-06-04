@@ -45,13 +45,6 @@ public abstract class ArenaManager implements Initializer {
     protected abstract List<Feature> loadFeatures();
 
     /**
-     * Load the arenas
-     *
-     * @return the arenas
-     */
-    protected abstract List<Arena> loadArenas();
-
-    /**
      * Get the instance of the game state
      *
      * @param gameStateClass the class of the game state
