@@ -82,4 +82,16 @@ public abstract class Arena implements Runnable, Initializer {
     public <T extends Feature> T getFeature(Class<T> featureClass) {
         return arenaManager.getFeature(featureClass);
     }
+
+    /**
+     * Convenient method. Get the feature for the arena
+     *
+     * @param arenaFeatureClass the class of the arena feature
+     * @param <T>               the type of the feature in the arena feature
+     * @param <A>               the type of the arena feature
+     * @return the feature
+     */
+    public <T extends Feature, A extends ArenaFeature<T>> T getArenaFeature(Class<A> arenaFeatureClass) {
+        return getFeature(arenaFeatureClass).getFeature(this);
+    }
 }
