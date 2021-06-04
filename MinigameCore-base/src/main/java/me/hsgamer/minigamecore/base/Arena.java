@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * The arena. The unit that handles the game
  */
 public abstract class Arena implements Runnable, Initializer {
-    private final AtomicReference<Class<GameState>> currentState = new AtomicReference<>();
+    private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final String name;
     private final ArenaManager arenaManager;
 
@@ -50,7 +50,7 @@ public abstract class Arena implements Runnable, Initializer {
      *
      * @return the class of the game state
      */
-    public Class<GameState> getState() {
+    public Class<? extends GameState> getState() {
         return this.currentState.get();
     }
 
@@ -59,7 +59,7 @@ public abstract class Arena implements Runnable, Initializer {
      *
      * @param stateClass the class of the game state
      */
-    public void setState(Class<GameState> stateClass) {
+    public void setState(Class<? extends GameState> stateClass) {
         this.currentState.set(stateClass);
     }
 
