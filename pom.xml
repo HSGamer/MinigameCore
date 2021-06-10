@@ -13,6 +13,7 @@
         <module>MinigameCore-base</module>
         <module>MinigameCore-implementation</module>
         <module>MinigameCore-bukkit</module>
+        <module>MinigameCore-standalone</module>
     </modules>
 
     <properties>

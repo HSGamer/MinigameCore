@@ -17,17 +17,17 @@ public class SimpleBukkitArena extends BukkitArena {
     }
 
     @Override
-    protected int getDelay() {
+    public int getDelay() {
         return 20;
     }
 
     @Override
-    protected int getPeriod() {
+    public int getPeriod() {
         return 20;
     }
 
     @Override
-    protected boolean isAsync() {
+    public boolean isAsync() {
         return false;
     }
 }

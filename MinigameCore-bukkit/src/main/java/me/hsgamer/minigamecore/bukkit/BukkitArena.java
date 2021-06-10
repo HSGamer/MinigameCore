@@ -2,6 +2,7 @@ package me.hsgamer.minigamecore.bukkit;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaManager;
+import me.hsgamer.minigamecore.base.TimePeriod;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,7 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * The {@link Arena} for Bukkit
  */
-public abstract class BukkitArena extends Arena {
+public abstract class BukkitArena extends Arena implements TimePeriod {
     private BukkitTask task;
 
     /**
@@ -23,40 +24,26 @@ public abstract class BukkitArena extends Arena {
     }
 
     /**
-     * Get the delay (in ticks) before the task runs
-     *
-     * @return the delay ticks
-     */
-    protected abstract int getDelay();
-
-    /**
-     * Get the period (in ticks) between task calling
-     *
-     * @return the period ticks
-     */
-    protected abstract int getPeriod();
-
-    /**
      * Does the task run asynchronously?
      *
      * @return true if it does
      */
-    protected abstract boolean isAsync();
+    public abstract boolean isAsync();
 
     @Override
     public void init() {
-        JavaPlugin plugin = JavaPlugin.getProvidingPlugin(getClass());
+        JavaPlugin plugin = JavaPlugin.getProvidingPlugin(this.getClass());
         if (isAsync()) {
-            task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, getDelay(), getPeriod());
+            this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, this.getDelay(), this.getPeriod());
         } else {
-            task = Bukkit.getScheduler().runTaskTimer(plugin, this, getDelay(), getPeriod());
+            this.task = Bukkit.getScheduler().runTaskTimer(plugin, this, this.getDelay(), this.getPeriod());
         }
     }
 
     @Override
     public void clear() {
-        if (task != null && !task.isCancelled()) {
-            task.cancel();
+        if (this.task != null && !this.task.isCancelled()) {
+            this.task.cancel();
         }
     }
 }
