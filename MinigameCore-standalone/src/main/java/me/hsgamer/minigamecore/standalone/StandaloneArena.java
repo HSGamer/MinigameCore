@@ -7,6 +7,9 @@ import me.hsgamer.minigamecore.base.TimePeriod;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The standalone {@link Arena}
+ */
 public abstract class StandaloneArena extends Arena implements TimePeriod {
     private final Timer timer = new Timer();
 
