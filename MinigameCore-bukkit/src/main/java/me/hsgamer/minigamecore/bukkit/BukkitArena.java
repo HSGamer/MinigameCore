@@ -42,7 +42,7 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
 
     @Override
     public void clear() {
-        if (this.task != null && !this.task.isCancelled()) {
+        if (this.task != null) {
             this.task.cancel();
         }
     }
