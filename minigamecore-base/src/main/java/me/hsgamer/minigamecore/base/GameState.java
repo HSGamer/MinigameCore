@@ -10,4 +10,13 @@ public interface GameState extends Initializer {
      * @param arena the arena
      */
     void handle(Arena arena);
+
+    /**
+     * Get the display name representing the state
+     *
+     * @return the display name
+     */
+    default String getDisplayName() {
+        return getClass().getSimpleName();
+    }
 }
