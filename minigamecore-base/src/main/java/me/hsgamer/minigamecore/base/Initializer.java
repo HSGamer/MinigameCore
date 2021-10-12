@@ -7,10 +7,14 @@ public interface Initializer {
     /**
      * Init the object
      */
-    void init();
+    default void init() {
+        // EMPTY
+    }
 
     /**
      * Clear the object
      */
-    void clear();
+    default void clear() {
+        // EMPTY
+    }
 }
