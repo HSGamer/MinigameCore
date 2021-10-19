@@ -2,7 +2,9 @@ package me.hsgamer.minigamecore.bukkit;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaManager;
+import me.hsgamer.minigamecore.base.GameState;
 import me.hsgamer.minigamecore.base.TimePeriod;
+import me.hsgamer.minigamecore.bukkit.event.ArenaChangeStateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -45,5 +47,11 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
         if (this.task != null) {
             this.task.cancel();
         }
+    }
+
+    @Override
+    public void setState(Class<? extends GameState> stateClass) {
+        super.setState(stateClass);
+        Bukkit.getPluginManager().callEvent(new ArenaChangeStateEvent(this, stateClass));
     }
 }
