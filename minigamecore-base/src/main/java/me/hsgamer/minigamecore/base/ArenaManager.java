@@ -22,10 +22,9 @@ public abstract class ArenaManager implements Initializer {
 
     @Override
     public void clear() {
-        arenaList.forEach(Initializer::clear);
+        clearAllArenas();
         gameStateMap.values().forEach(Initializer::clear);
         featureMap.values().forEach(Initializer::clear);
-        arenaList.clear();
         gameStateMap.clear();
         featureMap.clear();
     }
@@ -94,7 +93,7 @@ public abstract class ArenaManager implements Initializer {
      */
     public void addArena(Arena arena) {
         arena.init();
-        this.arenaList.add(arena);
+        arenaList.add(arena);
     }
 
     /**
@@ -104,6 +103,23 @@ public abstract class ArenaManager implements Initializer {
      */
     public void removeArena(Arena arena) {
         arena.clear();
-        this.arenaList.remove(arena);
+        arenaList.remove(arena);
+        clearArenaFromArenaFeature(arena);
+    }
+
+    /**
+     * Clear all arenas
+     */
+    public void clearAllArenas() {
+        arenaList.forEach(Initializer::clear);
+        arenaList.forEach(this::clearArenaFromArenaFeature);
+        arenaList.clear();
+    }
+
+    private void clearArenaFromArenaFeature(Arena arena) {
+        featureMap.values().stream()
+                .filter(ArenaFeature.class::isInstance)
+                .map(ArenaFeature.class::cast)
+                .forEach(arenaFeature -> arenaFeature.clearFeature(arena));
     }
 }

@@ -1,6 +1,7 @@
 package me.hsgamer.minigamecore.base;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,6 +32,16 @@ public abstract class ArenaFeature<T extends Feature> implements Feature {
             feature.init();
             return feature;
         });
+    }
+
+    /**
+     * Clear the feature of the arena
+     *
+     * @param arena the arena
+     */
+    public void clearFeature(Arena arena) {
+        Optional.ofNullable(arenaFeatureMap.remove(arena))
+                .ifPresent(Initializer::clear);
     }
 
     @Override
