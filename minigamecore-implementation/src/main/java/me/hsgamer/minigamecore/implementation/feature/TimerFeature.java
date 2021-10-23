@@ -3,12 +3,13 @@ package me.hsgamer.minigamecore.implementation.feature;
 import me.hsgamer.minigamecore.base.Feature;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * The timer feature, which provides duration
  */
 public class TimerFeature implements Feature {
-    private long endTime = 0;
+    private final AtomicLong cooldown = new AtomicLong();
 
     /**
      * Set the duration of the timer
@@ -19,7 +20,7 @@ public class TimerFeature implements Feature {
     public void setDuration(long duration, TimeUnit unit) {
         long current = System.currentTimeMillis();
         long durationMillis = unit.toMillis(duration);
-        endTime = current + durationMillis;
+        cooldown.lazySet(current + durationMillis);
     }
 
     /**
@@ -30,21 +31,13 @@ public class TimerFeature implements Feature {
      */
     public long getDuration(TimeUnit unit) {
         long current = System.currentTimeMillis();
-        if (endTime <= current) {
-            return 0;
-        } else {
-            long durationMillis = endTime - current;
-            return unit.convert(durationMillis, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    @Override
-    public void init() {
-        endTime = 0;
+        long endTime = cooldown.get();
+        long durationMillis = Math.max(0, endTime - current);
+        return unit.convert(durationMillis, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void clear() {
-        endTime = 0;
+        cooldown.lazySet(0);
     }
 }
