@@ -13,7 +13,7 @@ public abstract class LoadedArenaManager extends ArenaManager {
     @Override
     public void init() {
         super.init();
-        Optional.ofNullable(loadArenas()).ifPresent(arenas -> arenas.forEach(this::addArena));
+        reloadArena();
     }
 
     /**
@@ -22,4 +22,12 @@ public abstract class LoadedArenaManager extends ArenaManager {
      * @return the arenas
      */
     protected abstract List<Arena> loadArenas();
+
+    /**
+     * Reload the arenas
+     */
+    public void reloadArena() {
+        clearAllArenas();
+        Optional.ofNullable(loadArenas()).ifPresent(arenas -> arenas.forEach(this::addArena));
+    }
 }
