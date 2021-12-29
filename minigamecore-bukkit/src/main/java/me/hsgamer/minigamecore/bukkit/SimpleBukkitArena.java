@@ -17,12 +17,12 @@ public class SimpleBukkitArena extends BukkitArena {
     }
 
     @Override
-    public int getDelay() {
+    public long getDelay() {
         return 20;
     }
 
     @Override
-    public int getPeriod() {
+    public long getPeriod() {
         return 20;
     }
 

@@ -9,12 +9,12 @@ public interface TimePeriod {
      *
      * @return the delay time
      */
-    int getDelay();
+    long getDelay();
 
     /**
      * Get the period between task calling
      *
      * @return the period time
      */
-    int getPeriod();
+    long getPeriod();
 }
