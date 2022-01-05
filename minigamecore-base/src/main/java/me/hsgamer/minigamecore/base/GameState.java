@@ -8,8 +8,9 @@ public interface GameState extends Initializer {
      * Handle the logic of the current state of the arena
      *
      * @param arena the arena
+     * @param delta the offset of the current time and the last time in milliseconds
      */
-    void handle(Arena arena);
+    void handle(Arena arena, long delta);
 
     /**
      * Get the display name representing the state

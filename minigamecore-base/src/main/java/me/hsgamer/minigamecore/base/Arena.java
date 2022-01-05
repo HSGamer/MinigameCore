@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * The arena. The unit that handles the game
  */
 public abstract class Arena implements Runnable, Initializer {
+    private final AtomicReference<Long> lastTime = new AtomicReference<>(System.currentTimeMillis());
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final String name;
     private final ArenaManager arenaManager;
@@ -24,7 +25,27 @@ public abstract class Arena implements Runnable, Initializer {
 
     @Override
     public void run() {
-        getStateInstance().ifPresent(gameState -> gameState.handle(this));
+        getStateInstance().ifPresent(gameState -> gameState.handle(this, getDeltaTime()));
+    }
+
+    /**
+     * Get the delta time (the offset of the current time and the last time) in milliseconds
+     *
+     * @return the delta time
+     */
+    protected long getDeltaTime() {
+        long current = System.currentTimeMillis();
+        long delta = current - lastTime.get();
+        lastTime.set(current);
+        return delta;
+    }
+
+    /**
+     * Get the last time that is used to calculate the delta time
+     * @return the last time
+     */
+    public long getLastTime() {
+        return lastTime.get();
     }
 
     /**
