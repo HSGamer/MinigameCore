@@ -17,4 +17,13 @@ public interface TimePeriod {
      * @return the period time
      */
     long getPeriod();
+
+    /**
+     * Should the period be removed from the delta time
+     *
+     * @return true if the period should be removed
+     */
+    default boolean isRemovePeriodFromDeltaTime() {
+        return true;
+    }
 }

@@ -10,7 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
- * The {@link Arena} for Bukkit
+ * The {@link Arena} for Bukkit.
+ * {@link #getPeriod()} & {@link #getDelay()} will return the time in Bukkit's ticks (20 ticks = 1 seconds).
  */
 public abstract class BukkitArena extends Arena implements TimePeriod {
     private BukkitTask task;
@@ -54,5 +55,14 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
         Class<? extends GameState> oldStateClass = this.getState();
         super.setState(stateClass);
         Bukkit.getPluginManager().callEvent(new ArenaChangeStateEvent(this, oldStateClass, stateClass));
+    }
+
+    @Override
+    protected long getDeltaTime(long current, long last) {
+        long delta = super.getDeltaTime(current, last);
+        if (isRemovePeriodFromDeltaTime()) {
+            delta -= (long) (this.getPeriod() / 20D * 1000D);
+        }
+        return delta;
     }
 }

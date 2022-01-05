@@ -47,4 +47,13 @@ public abstract class StandaloneArena extends Arena implements TimePeriod {
     public Timer getTimer() {
         return this.timer;
     }
+
+    @Override
+    protected long getDeltaTime(long current, long last) {
+        long delta = super.getDeltaTime(current, last);
+        if (isRemovePeriodFromDeltaTime()) {
+            delta -= this.getPeriod();
+        }
+        return delta;
+    }
 }
