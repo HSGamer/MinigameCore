@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 /**
  * The {@link Arena} for Bukkit.
- * {@link #getPeriod()} & {@link #getDelay()} will return the time in Bukkit's ticks (20 ticks = 1 seconds).
+ * {@link #getPeriod()} and {@link #getDelay()} will return the time in Bukkit's ticks (20 ticks = 1 seconds).
  */
 public abstract class BukkitArena extends Arena implements TimePeriod {
     private BukkitTask task;
