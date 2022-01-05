@@ -25,23 +25,25 @@ public abstract class Arena implements Runnable, Initializer {
 
     @Override
     public void run() {
-        getStateInstance().ifPresent(gameState -> gameState.handle(this, getDeltaTime()));
+        long current = System.currentTimeMillis();
+        getStateInstance().ifPresent(gameState -> gameState.handle(this, getDeltaTime(current, lastTime.get())));
+        lastTime.set(current);
     }
 
     /**
      * Get the delta time (the offset of the current time and the last time) in milliseconds
      *
+     * @param current the current time
+     * @param last    the last time
      * @return the delta time
      */
-    protected long getDeltaTime() {
-        long current = System.currentTimeMillis();
-        long delta = current - lastTime.get();
-        lastTime.set(current);
-        return delta;
+    protected long getDeltaTime(long current, long last) {
+        return current - last;
     }
 
     /**
      * Get the last time that is used to calculate the delta time
+     *
      * @return the last time
      */
     public long getLastTime() {
