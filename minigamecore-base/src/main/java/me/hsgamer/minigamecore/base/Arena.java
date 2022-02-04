@@ -43,7 +43,7 @@ public class Arena implements Runnable, Initializer {
     /**
      * This is called when the state is changed.
      * This is usually used to do actions on state changed.
-     * If you did change the state yourself, set the return value to false.
+     * If you did change the state with {@link #setNextState(Class)} or {@link #setNextStateLazy(Class)}, set the return value to false.
      *
      * @param oldStage the old state
      * @param newStage the new state
