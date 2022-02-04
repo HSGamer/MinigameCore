@@ -34,6 +34,7 @@ public class Arena implements Runnable, Initializer {
             currentStateOptional.ifPresent(gameState -> gameState.end(this, delta));
             GameState nextStateInstance = nextStateOptional.get();
             currentState.set(nextStateInstance.getClass());
+            nextState.set(null);
             callStateChanged(currentStateOptional.orElse(null), nextStateInstance);
             nextStateInstance.start(this, delta);
         } else {
