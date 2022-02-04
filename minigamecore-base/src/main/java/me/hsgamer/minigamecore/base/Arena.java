@@ -6,9 +6,10 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * The arena. The unit that handles the game
  */
-public abstract class Arena implements Runnable, Initializer {
+public class Arena implements Runnable, Initializer {
     private final AtomicReference<Long> lastTime = new AtomicReference<>(System.currentTimeMillis());
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
+    private final AtomicReference<Class<? extends GameState>> nextState = new AtomicReference<>();
     private final String name;
     private final ArenaManager arenaManager;
 
@@ -18,15 +19,26 @@ public abstract class Arena implements Runnable, Initializer {
      * @param name         the name of the arena
      * @param arenaManager the arena manager
      */
-    protected Arena(String name, ArenaManager arenaManager) {
+    public Arena(String name, ArenaManager arenaManager) {
         this.name = name;
         this.arenaManager = arenaManager;
     }
 
     @Override
-    public void run() {
+    public final void run() {
+        Optional<GameState> currentStateOptional = getStateInstance();
+        Optional<GameState> nextStateOptional = getNextStateInstance();
         long current = System.currentTimeMillis();
-        getStateInstance().ifPresent(gameState -> gameState.handle(this, getDeltaTime(current, lastTime.get())));
+        long delta = getDeltaTime(current, lastTime.get());
+        if (nextStateOptional.isPresent()) {
+            currentStateOptional.ifPresent(gameState -> gameState.end(this, delta));
+            GameState nextStateInstance = nextStateOptional.get();
+            currentState.set(nextStateInstance.getClass());
+            callStateChanged(currentStateOptional.orElse(null), nextStateInstance);
+            nextStateInstance.start(this, delta);
+        } else {
+            currentStateOptional.ifPresent(gameState -> gameState.update(this, delta));
+        }
         lastTime.set(current);
     }
 
@@ -39,6 +51,16 @@ public abstract class Arena implements Runnable, Initializer {
      */
     protected long getDeltaTime(long current, long last) {
         return current - last;
+    }
+
+    /**
+     * This is called when the state is changed
+     *
+     * @param oldStage the old state
+     * @param newStage the new state
+     */
+    protected void callStateChanged(GameState oldStage, GameState newStage) {
+        // EMPTY
     }
 
     /**
@@ -78,21 +100,48 @@ public abstract class Arena implements Runnable, Initializer {
     }
 
     /**
-     * Set the game state of the arena
-     *
-     * @param stateClass the class of the game state
-     */
-    public void setState(Class<? extends GameState> stateClass) {
-        this.currentState.set(stateClass);
-    }
-
-    /**
      * Get the instance of the game state of the arena
      *
      * @return the instance of the game state
      */
     public Optional<GameState> getStateInstance() {
         return Optional.ofNullable(getState()).map(arenaManager::getGameState);
+    }
+
+    /**
+     * Get the next game state of the arena
+     *
+     * @return the class of the game state
+     */
+    public Class<? extends GameState> getNextState() {
+        return this.nextState.get();
+    }
+
+    /**
+     * Set the next game state of the arena
+     *
+     * @param stateClass the class of the game state
+     */
+    public void setNextState(Class<? extends GameState> stateClass) {
+        this.nextState.set(stateClass);
+    }
+
+    /**
+     * Eventually set the next game state of the arena
+     *
+     * @param stateClass the class of the game state
+     */
+    public void setNextStateLazy(Class<? extends GameState> stateClass) {
+        this.nextState.lazySet(stateClass);
+    }
+
+    /**
+     * Get the instance of the next game state of the arena
+     *
+     * @return the instance of the game state
+     */
+    public Optional<GameState> getNextStateInstance() {
+        return Optional.ofNullable(getNextState()).map(arenaManager::getGameState);
     }
 
     /**

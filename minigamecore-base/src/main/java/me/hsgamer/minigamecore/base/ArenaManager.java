@@ -102,9 +102,10 @@ public abstract class ArenaManager implements Initializer {
      * @param arena the arena
      */
     public void removeArena(Arena arena) {
-        arena.clear();
-        arenaList.remove(arena);
-        clearArenaFromArenaFeature(arena);
+        if (arenaList.remove(arena)) {
+            arena.clear();
+            clearArenaFromArenaFeature(arena);
+        }
     }
 
     /**

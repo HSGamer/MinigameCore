@@ -5,12 +5,38 @@ package me.hsgamer.minigamecore.base;
  */
 public interface GameState extends Initializer {
     /**
-     * Handle the logic of the current state of the arena
+     * Handle the logic of the arena at the start of the state.
+     * This is usually called on the first tick of the arena.
+     * Default will call {@link GameState#update(Arena, long)}
      *
      * @param arena the arena
      * @param delta the offset of the current time and the last time in milliseconds
      */
-    void handle(Arena arena, long delta);
+    default void start(Arena arena, long delta) {
+        update(arena, delta);
+    }
+
+    /**
+     * Handle the logic of the arena on the "in-game" tick.
+     * Called when the arena is ticked in the next ticks.
+     *
+     * @param arena the arena
+     * @param delta the offset of the current time and the last time in milliseconds
+     */
+    default void update(Arena arena, long delta) {
+        // EMPTY
+    }
+
+    /**
+     * Handle the logic of the arena at the end of the state.
+     * This is usually called when the state of the arena is changed.
+     *
+     * @param arena the arena
+     * @param delta the offset of the current time and the last time in milliseconds
+     */
+    default void end(Arena arena, long delta) {
+        // EMPTY
+    }
 
     /**
      * Get the display name representing the state

@@ -2,6 +2,7 @@ package me.hsgamer.minigamecore.bukkit.event;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
+import me.hsgamer.minigamecore.bukkit.BukkitArena;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -10,23 +11,29 @@ import org.bukkit.event.HandlerList;
  */
 public class ArenaChangeStateEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Arena arena;
-    private final Class<? extends GameState> oldStateClass;
-    private final Class<? extends GameState> stateClass;
+    private final BukkitArena arena;
+    private final GameState oldState;
+    private final GameState newState;
 
     /**
      * Construct the event
      *
-     * @param arena         the arena
-     * @param oldStateClass the old state class
-     * @param stateClass    the state class
+     * @param arena    the arena
+     * @param oldState the old game state
+     * @param newState the new game state
      */
-    public ArenaChangeStateEvent(Arena arena, Class<? extends GameState> oldStateClass, Class<? extends GameState> stateClass) {
+    public ArenaChangeStateEvent(BukkitArena arena, GameState oldState, GameState newState) {
+        super(arena.isAsync());
         this.arena = arena;
-        this.oldStateClass = oldStateClass;
-        this.stateClass = stateClass;
+        this.oldState = oldState;
+        this.newState = newState;
     }
 
+    /**
+     * Get the handler list
+     *
+     * @return the handler list
+     */
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
@@ -46,39 +53,20 @@ public class ArenaChangeStateEvent extends Event {
     }
 
     /**
-     * Get the class of the state
+     * Get the old game state
      *
-     * @return the state class
-     */
-    public Class<? extends GameState> getStateClass() {
-        return stateClass;
-    }
-
-    /**
-     * Get the instance of the state
-     *
-     * @return the state
-     */
-    public GameState getState() {
-        return arena.getArenaManager().getGameState(stateClass);
-    }
-
-    /**
-     * Get the class of the old state
-     *
-     * @return the old state class
-     */
-    public Class<? extends GameState> getOldStateClass() {
-        return oldStateClass;
-    }
-
-    /**
-     * Get the instance of the old state
-     *
-     * @return the old state
+     * @return the old game state
      */
     public GameState getOldState() {
-        if (oldStateClass == null) return null;
-        return arena.getArenaManager().getGameState(oldStateClass);
+        return oldState;
+    }
+
+    /**
+     * Get the new game state
+     *
+     * @return the new game state
+     */
+    public GameState getNewState() {
+        return newState;
     }
 }
