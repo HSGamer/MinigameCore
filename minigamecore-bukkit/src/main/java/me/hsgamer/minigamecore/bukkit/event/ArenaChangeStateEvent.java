@@ -3,17 +3,20 @@ package me.hsgamer.minigamecore.bukkit.event;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
 import me.hsgamer.minigamecore.bukkit.BukkitArena;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * The event called when an arena changed its state
+ * The event called when an arena changed its state.
+ * If you modified the next state in this event, you should cancel the event with {@link #setCancelled(boolean)}.
  */
-public class ArenaChangeStateEvent extends Event {
+public class ArenaChangeStateEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
     private final BukkitArena arena;
     private final GameState oldState;
     private final GameState newState;
+    private boolean cancelled = false;
 
     /**
      * Construct the event
@@ -36,6 +39,16 @@ public class ArenaChangeStateEvent extends Event {
      */
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     @Override

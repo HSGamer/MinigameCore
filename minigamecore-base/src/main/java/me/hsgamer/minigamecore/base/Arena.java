@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * The arena. The unit that handles the game
  */
 public class Arena implements Runnable, Initializer {
-    private final AtomicReference<Long> lastTime = new AtomicReference<>(System.currentTimeMillis());
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final AtomicReference<Class<? extends GameState>> nextState = new AtomicReference<>();
     private final String name;
@@ -28,49 +27,30 @@ public class Arena implements Runnable, Initializer {
     public final void run() {
         Optional<GameState> currentStateOptional = getStateInstance();
         Optional<GameState> nextStateOptional = getNextStateInstance();
-        long current = System.currentTimeMillis();
-        long delta = getDeltaTime(current, lastTime.get());
         if (nextStateOptional.isPresent()) {
-            currentStateOptional.ifPresent(gameState -> gameState.end(this, delta));
             GameState nextStateInstance = nextStateOptional.get();
-            currentState.set(nextStateInstance.getClass());
-            nextState.set(null);
-            callStateChanged(currentStateOptional.orElse(null), nextStateInstance);
-            nextStateInstance.start(this, delta);
-        } else {
-            currentStateOptional.ifPresent(gameState -> gameState.update(this, delta));
+            if (callStateChanged(currentStateOptional.orElse(null), nextStateInstance)) {
+                currentState.set(nextStateInstance.getClass());
+                nextState.set(null);
+                currentStateOptional.ifPresent(gameState -> gameState.end(this));
+                nextStateInstance.start(this);
+                return;
+            }
         }
-        lastTime.set(current);
+        currentStateOptional.ifPresent(gameState -> gameState.update(this));
     }
 
     /**
-     * Get the delta time (the offset of the current time and the last time) in milliseconds
-     *
-     * @param current the current time
-     * @param last    the last time
-     * @return the delta time
-     */
-    protected long getDeltaTime(long current, long last) {
-        return current - last;
-    }
-
-    /**
-     * This is called when the state is changed
+     * This is called when the state is changed.
+     * This is usually used to do actions on state changed.
+     * If you did change the state yourself, set the return value to false.
      *
      * @param oldStage the old state
      * @param newStage the new state
+     * @return true if the change is successful, otherwise false
      */
-    protected void callStateChanged(GameState oldStage, GameState newStage) {
-        // EMPTY
-    }
-
-    /**
-     * Get the last time that is used to calculate the delta time
-     *
-     * @return the last time
-     */
-    public long getLastTime() {
-        return lastTime.get();
+    protected boolean callStateChanged(GameState oldStage, GameState newStage) {
+        return true;
     }
 
     /**

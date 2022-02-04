@@ -51,16 +51,9 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
     }
 
     @Override
-    protected long getDeltaTime(long current, long last) {
-        long delta = super.getDeltaTime(current, last);
-        if (isRemovePeriodFromDeltaTime()) {
-            delta -= (long) (this.getPeriod() / 20D * 1000D);
-        }
-        return delta;
-    }
-
-    @Override
-    protected void callStateChanged(GameState oldStage, GameState newStage) {
-        Bukkit.getPluginManager().callEvent(new ArenaChangeStateEvent(this, oldStage, newStage));
+    protected boolean callStateChanged(GameState oldStage, GameState newStage) {
+        ArenaChangeStateEvent event = new ArenaChangeStateEvent(this, oldStage, newStage);
+        Bukkit.getPluginManager().callEvent(event);
+        return !event.isCancelled();
     }
 }

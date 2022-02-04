@@ -7,13 +7,12 @@ public interface GameState extends Initializer {
     /**
      * Handle the logic of the arena at the start of the state.
      * This is usually called on the first tick of the arena.
-     * Default will call {@link GameState#update(Arena, long)}
+     * Default will call {@link GameState#update(Arena)}
      *
      * @param arena the arena
-     * @param delta the offset of the current time and the last time in milliseconds
      */
-    default void start(Arena arena, long delta) {
-        update(arena, delta);
+    default void start(Arena arena) {
+        // EMPTY
     }
 
     /**
@@ -21,9 +20,8 @@ public interface GameState extends Initializer {
      * Called when the arena is ticked in the next ticks.
      *
      * @param arena the arena
-     * @param delta the offset of the current time and the last time in milliseconds
      */
-    default void update(Arena arena, long delta) {
+    default void update(Arena arena) {
         // EMPTY
     }
 
@@ -32,9 +30,8 @@ public interface GameState extends Initializer {
      * This is usually called when the state of the arena is changed.
      *
      * @param arena the arena
-     * @param delta the offset of the current time and the last time in milliseconds
      */
-    default void end(Arena arena, long delta) {
+    default void end(Arena arena) {
         // EMPTY
     }
 
