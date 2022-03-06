@@ -91,9 +91,11 @@ public abstract class ArenaManager implements Initializer {
      *
      * @param arena the arena
      */
-    public void addArena(Arena arena) {
+    public boolean addArena(Arena arena) {
+        if (!featureMap.values().stream().allMatch(feature -> feature.isArenaSupported(arena))) return false;
         arena.init();
         arenaList.add(arena);
+        return true;
     }
 
     /**

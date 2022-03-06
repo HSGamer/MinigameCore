@@ -28,6 +28,21 @@ public abstract class LoadedArenaManager extends ArenaManager {
      */
     public void reloadArena() {
         clearAllArenas();
-        Optional.ofNullable(loadArenas()).ifPresent(arenas -> arenas.forEach(this::addArena));
+        Optional.ofNullable(loadArenas()).ifPresent(arenas -> {
+            for (Arena arena : arenas) {
+                if (!addArena(arena)) {
+                    onArenaFailedToLoad(arena);
+                }
+            }
+        });
+    }
+
+    /**
+     * Called when the arena failed to load
+     *
+     * @param arena the arena
+     */
+    public void onArenaFailedToLoad(Arena arena) {
+        // EMPTY
     }
 }
