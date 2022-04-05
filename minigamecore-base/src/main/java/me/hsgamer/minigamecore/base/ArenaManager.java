@@ -21,6 +21,13 @@ public abstract class ArenaManager implements Initializer {
     }
 
     @Override
+    public void postInit() {
+        featureMap.values().forEach(Feature::postInit);
+        gameStateMap.values().forEach(GameState::postInit);
+        arenaList.forEach(Arena::postInit);
+    }
+
+    @Override
     public void clear() {
         clearAllArenas();
         gameStateMap.values().forEach(Initializer::clear);

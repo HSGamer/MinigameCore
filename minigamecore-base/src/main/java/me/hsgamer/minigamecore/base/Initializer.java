@@ -12,6 +12,13 @@ public interface Initializer {
     }
 
     /**
+     * Called on special event when all the objects are initialized
+     */
+    default void postInit() {
+        // EMPTY
+    }
+
+    /**
      * Clear the object
      */
     default void clear() {
