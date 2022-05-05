@@ -1,6 +1,7 @@
 package me.hsgamer.minigamecore.base;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The manager that handles all arenas
@@ -90,7 +91,7 @@ public abstract class ArenaManager implements Initializer {
      * @return the list of arenas
      */
     public List<Arena> getAllArenas() {
-        return Collections.unmodifiableList(arenaList);
+        return Collections.unmodifiableList(arenaList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
 
     /**
@@ -121,8 +122,11 @@ public abstract class ArenaManager implements Initializer {
      * Clear all arenas
      */
     public void clearAllArenas() {
-        arenaList.forEach(Initializer::clear);
-        arenaList.forEach(this::clearArenaFromArenaFeature);
+        arenaList.forEach(arena -> {
+            if (arena == null) return;
+            arena.clear();
+            clearArenaFromArenaFeature(arena);
+        });
         arenaList.clear();
     }
 
