@@ -1,0 +1,9 @@
+me.hsgamer.minigamecore.base
+me.hsgamer.minigamecore.bukkit
+me.hsgamer.minigamecore.bukkit.event
+me.hsgamer.minigamecore.implementation
+me.hsgamer.minigamecore.implementation.feature
+me.hsgamer.minigamecore.implementation.feature.arena
+me.hsgamer.minigamecore.implementation.feature.single
+me.hsgamer.minigamecore.implementation.manager
+me.hsgamer.minigamecore.standalone
