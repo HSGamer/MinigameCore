@@ -9,6 +9,36 @@
     <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>MinigameCore</name>
+    <description>A core library for minigame development</description>
+    <url>https://github.com/HSGamer/MinigameCore</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/HSGamer/MinigameCore/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>HSGamer</name>
+            <email>huynhqtienvtag@gmail.com</email>
+            <url>https://github.com/HSGamer</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/HSGamer/MinigameCore/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/HSGamer/MinigameCore.git</connection>
+        <developerConnection>scm:git:git@github.com:HSGamer/MinigameCore.git</developerConnection>
+        <url>https://github.com/HSGamer/MinigameCore</url>
+    </scm>
+
     <modules>
         <module>minigamecore-base</module>
         <module>minigamecore-implementation</module>
@@ -99,6 +129,58 @@
                     <id>github</id>
                     <name>GitHub Packages</name>
                     <url>https://maven.pkg.github.com/HSGamer/MinigameCore</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>sonatype</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
         </profile>
