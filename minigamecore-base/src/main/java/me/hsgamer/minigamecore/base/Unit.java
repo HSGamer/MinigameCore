@@ -59,6 +59,7 @@ public final class Unit<T> {
      * @param <T>   the type of the unit
      * @return the list of units
      */
+    @SafeVarargs
     public static <T> List<Unit<T>> wrap(T... array) {
         return wrap(Arrays.asList(array));
     }
