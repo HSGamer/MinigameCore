@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 /**
  * The manager that handles all arenas
  */
-public class ArenaManager implements Initializer {
+public abstract class ArenaManager implements Initializer {
     private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
     private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
     private final List<Arena> arenaList = new LinkedList<>();
@@ -16,18 +16,14 @@ public class ArenaManager implements Initializer {
      *
      * @return the game states
      */
-    protected List<Unit<GameState>> loadGameStates() {
-        return Collections.emptyList();
-    }
+    protected abstract List<Unit<GameState>> loadGameStates();
 
     /**
      * Load the features for all arenas
      *
      * @return the features
      */
-    protected List<Unit<Feature>> loadFeatures() {
-        return Collections.emptyList();
-    }
+    protected abstract List<Unit<Feature>> loadFeatures();
 
     @Override
     public void init() {
