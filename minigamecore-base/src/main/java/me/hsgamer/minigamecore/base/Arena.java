@@ -1,14 +1,15 @@
 package me.hsgamer.minigamecore.base;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The arena. The unit that handles the game
  */
 public class Arena implements Runnable, Initializer {
-    private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
-    private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
+    private final ArenaUnit arenaUnit = new ArenaUnit();
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final AtomicReference<Class<? extends GameState>> nextState = new AtomicReference<>();
     private final String name;
@@ -95,27 +96,22 @@ public class Arena implements Runnable, Initializer {
 
     @Override
     public final void init() {
-        loadFeatures().forEach(unit -> featureMap.put(unit.clazz, unit.instance));
-        loadGameStates().forEach(unit -> gameStateMap.put(unit.clazz, unit.instance));
-        featureMap.values().forEach(Initializer::init);
-        gameStateMap.values().forEach(Initializer::init);
+        arenaUnit.loadFeatures(loadFeatures());
+        arenaUnit.loadGameStates(loadGameStates());
+        arenaUnit.init();
         initArena();
     }
 
     @Override
     public final void postInit() {
-        featureMap.values().forEach(Feature::postInit);
-        gameStateMap.values().forEach(GameState::postInit);
+        arenaUnit.postInit();
         postInitArena();
     }
 
     @Override
     public final void clear() {
         clearArena();
-        gameStateMap.values().forEach(Initializer::clear);
-        featureMap.values().forEach(Initializer::clear);
-        gameStateMap.clear();
-        featureMap.clear();
+        arenaUnit.clear();
     }
 
     @Override
@@ -161,11 +157,11 @@ public class Arena implements Runnable, Initializer {
      * @return the instance of the game state
      */
     public <T extends GameState> T getGameState(Class<T> gameStateClass) {
-        GameState gameState = gameStateMap.get(gameStateClass);
+        T gameState = arenaUnit.getGameState(gameStateClass);
         if (gameState == null) {
             gameState = arenaManager.getGameState(gameStateClass);
         }
-        return gameStateClass.isInstance(gameState) ? gameStateClass.cast(gameState) : null;
+        return gameState;
     }
 
     /**
@@ -221,11 +217,11 @@ public class Arena implements Runnable, Initializer {
      * @return the instance of the feature
      */
     public <T extends Feature> T getFeature(Class<T> featureClass) {
-        Feature feature = featureMap.get(featureClass);
+        T feature = arenaUnit.getFeature(featureClass);
         if (feature == null) {
             feature = arenaManager.getFeature(featureClass);
         }
-        return featureClass.isInstance(feature) ? featureClass.cast(feature) : null;
+        return feature;
     }
 
     /**

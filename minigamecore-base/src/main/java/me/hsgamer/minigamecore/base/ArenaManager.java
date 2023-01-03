@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
  * The manager that handles all arenas
  */
 public abstract class ArenaManager implements Initializer {
-    private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
-    private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
+    private final ArenaUnit arenaUnit = new ArenaUnit();
     private final List<Arena> arenaList = new LinkedList<>();
 
     /**
@@ -27,26 +26,21 @@ public abstract class ArenaManager implements Initializer {
 
     @Override
     public void init() {
-        loadFeatures().forEach(unit -> featureMap.put(unit.clazz, unit.instance));
-        loadGameStates().forEach(unit -> gameStateMap.put(unit.clazz, unit.instance));
-        featureMap.values().forEach(Initializer::init);
-        gameStateMap.values().forEach(Initializer::init);
+        arenaUnit.loadFeatures(loadFeatures());
+        arenaUnit.loadGameStates(loadGameStates());
+        arenaUnit.init();
     }
 
     @Override
     public void postInit() {
-        featureMap.values().forEach(Feature::postInit);
-        gameStateMap.values().forEach(GameState::postInit);
+        arenaUnit.postInit();
         arenaList.forEach(Arena::postInit);
     }
 
     @Override
     public void clear() {
         clearAllArenas();
-        gameStateMap.values().forEach(Initializer::clear);
-        featureMap.values().forEach(Initializer::clear);
-        gameStateMap.clear();
-        featureMap.clear();
+        arenaUnit.clear();
     }
 
     /**
@@ -57,8 +51,7 @@ public abstract class ArenaManager implements Initializer {
      * @return the instance of the game state
      */
     public <T extends GameState> T getGameState(Class<T> gameStateClass) {
-        GameState gameState = gameStateMap.get(gameStateClass);
-        return gameStateClass.isInstance(gameState) ? gameStateClass.cast(gameState) : null;
+        return arenaUnit.getGameState(gameStateClass);
     }
 
     /**
@@ -69,8 +62,7 @@ public abstract class ArenaManager implements Initializer {
      * @return the instance of the feature
      */
     public <T extends Feature> T getFeature(Class<T> featureClass) {
-        Feature feature = featureMap.get(featureClass);
-        return featureClass.isInstance(feature) ? featureClass.cast(feature) : null;
+        return arenaUnit.getFeature(featureClass);
     }
 
     /**
