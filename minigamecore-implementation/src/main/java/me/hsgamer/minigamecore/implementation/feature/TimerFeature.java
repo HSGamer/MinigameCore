@@ -9,18 +9,27 @@ import java.util.concurrent.atomic.AtomicLong;
  * The timer feature, which provides duration
  */
 public class TimerFeature implements Feature {
-    private final AtomicLong cooldown = new AtomicLong();
+    private final AtomicLong currentEndTime = new AtomicLong();
 
     /**
-     * Set the duration of the timer
+     * Get the duration of the timer in milliseconds
+     *
+     * @return the duration
+     */
+    public long getDuration() {
+        long current = System.currentTimeMillis();
+        long endTime = currentEndTime.get();
+        return Math.max(0, endTime - current);
+    }
+
+    /**
+     * Set the duration of the timer in milliseconds
      *
      * @param duration the duration
-     * @param unit     the time unit of the duration
      */
-    public void setDuration(long duration, TimeUnit unit) {
+    public void setDuration(long duration) {
         long current = System.currentTimeMillis();
-        long durationMillis = unit.toMillis(duration);
-        cooldown.lazySet(current + durationMillis);
+        currentEndTime.set(current + duration);
     }
 
     /**
@@ -30,14 +39,21 @@ public class TimerFeature implements Feature {
      * @return the duration
      */
     public long getDuration(TimeUnit unit) {
-        long current = System.currentTimeMillis();
-        long endTime = cooldown.get();
-        long durationMillis = Math.max(0, endTime - current);
-        return unit.convert(durationMillis, TimeUnit.MILLISECONDS);
+        return unit.convert(getDuration(), TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Set the duration of the timer
+     *
+     * @param duration the duration
+     * @param unit     the time unit of the duration
+     */
+    public void setDuration(long duration, TimeUnit unit) {
+        setDuration(unit.toMillis(duration));
     }
 
     @Override
     public void clear() {
-        cooldown.lazySet(0);
+        currentEndTime.lazySet(0);
     }
 }
