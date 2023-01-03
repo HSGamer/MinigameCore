@@ -30,7 +30,7 @@ public class Arena implements Runnable, Initializer {
      *
      * @return the game states
      */
-    protected List<GameState> loadGameStates() {
+    protected List<Unit<GameState>> loadGameStates() {
         return Collections.emptyList();
     }
 
@@ -39,7 +39,7 @@ public class Arena implements Runnable, Initializer {
      *
      * @return the features
      */
-    protected List<Feature> loadFeatures() {
+    protected List<Unit<Feature>> loadFeatures() {
         return Collections.emptyList();
     }
 
@@ -95,8 +95,8 @@ public class Arena implements Runnable, Initializer {
 
     @Override
     public final void init() {
-        loadFeatures().forEach(feature -> featureMap.put(feature.getClass(), feature));
-        loadGameStates().forEach(gameState -> gameStateMap.put(gameState.getClass(), gameState));
+        loadFeatures().forEach(unit -> featureMap.put(unit.clazz, unit.instance));
+        loadGameStates().forEach(unit -> gameStateMap.put(unit.clazz, unit.instance));
         featureMap.values().forEach(Initializer::init);
         gameStateMap.values().forEach(Initializer::init);
         initArena();

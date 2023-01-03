@@ -11,10 +11,28 @@ public class ArenaManager implements Initializer {
     private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
     private final List<Arena> arenaList = new LinkedList<>();
 
+    /**
+     * Load the game states for all arenas
+     *
+     * @return the game states
+     */
+    protected List<Unit<GameState>> loadGameStates() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Load the features for all arenas
+     *
+     * @return the features
+     */
+    protected List<Unit<Feature>> loadFeatures() {
+        return Collections.emptyList();
+    }
+
     @Override
     public void init() {
-        loadFeatures().forEach(feature -> featureMap.put(feature.getClass(), feature));
-        loadGameStates().forEach(gameState -> gameStateMap.put(gameState.getClass(), gameState));
+        loadFeatures().forEach(unit -> featureMap.put(unit.clazz, unit.instance));
+        loadGameStates().forEach(unit -> gameStateMap.put(unit.clazz, unit.instance));
         featureMap.values().forEach(Initializer::init);
         gameStateMap.values().forEach(Initializer::init);
     }
@@ -33,24 +51,6 @@ public class ArenaManager implements Initializer {
         featureMap.values().forEach(Initializer::clear);
         gameStateMap.clear();
         featureMap.clear();
-    }
-
-    /**
-     * Load the game states for all arenas
-     *
-     * @return the game states
-     */
-    protected List<GameState> loadGameStates() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Load the features for all arenas
-     *
-     * @return the features
-     */
-    protected List<Feature> loadFeatures() {
-        return Collections.emptyList();
     }
 
     /**
