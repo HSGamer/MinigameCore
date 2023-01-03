@@ -73,7 +73,7 @@ public class Arena implements Runnable, Initializer {
     /**
      * This is called when the state is changed.
      * This is usually used to do actions on state changed.
-     * If you did change the state with {@link #setNextState(Class)} or {@link #setNextStateLazy(Class)}, set the return value to false.
+     * If you did change the state with {@link #setNextState(Class)}, set the return value to false.
      *
      * @param oldStage the old state
      * @param newStage the new state
@@ -196,12 +196,12 @@ public class Arena implements Runnable, Initializer {
     }
 
     /**
-     * Set the next game state of the arena
+     * Set the next game state of the arena.
      *
      * @param stateClass the class of the game state
      */
     public void setNextState(Class<? extends GameState> stateClass) {
-        this.nextState.set(stateClass);
+        this.nextState.lazySet(stateClass);
     }
 
     /**
@@ -211,15 +211,6 @@ public class Arena implements Runnable, Initializer {
      */
     public Optional<GameState> getNextStateInstance() {
         return Optional.ofNullable(getNextState()).map(this::getGameState);
-    }
-
-    /**
-     * Eventually set the next game state of the arena
-     *
-     * @param stateClass the class of the game state
-     */
-    public void setNextStateLazy(Class<? extends GameState> stateClass) {
-        this.nextState.lazySet(stateClass);
     }
 
     /**
