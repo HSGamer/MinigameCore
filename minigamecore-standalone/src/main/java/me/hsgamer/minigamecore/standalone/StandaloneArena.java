@@ -24,7 +24,7 @@ public abstract class StandaloneArena extends Arena implements TimePeriod {
     }
 
     @Override
-    public void init() {
+    protected void initArena() {
         Runnable runnable = this;
         this.timer.schedule(new TimerTask() {
             @Override
@@ -35,7 +35,7 @@ public abstract class StandaloneArena extends Arena implements TimePeriod {
     }
 
     @Override
-    public void clear() {
+    protected void clearArena() {
         this.timer.cancel();
     }
 

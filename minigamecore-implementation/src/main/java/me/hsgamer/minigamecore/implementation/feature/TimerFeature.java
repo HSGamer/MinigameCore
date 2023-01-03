@@ -1,4 +1,4 @@
-package me.hsgamer.minigamecore.implementation.feature.single;
+package me.hsgamer.minigamecore.implementation.feature;
 
 import me.hsgamer.minigamecore.base.Feature;
 

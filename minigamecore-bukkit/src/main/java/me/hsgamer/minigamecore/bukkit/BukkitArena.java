@@ -34,7 +34,7 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
     public abstract boolean isAsync();
 
     @Override
-    public void init() {
+    protected void initArena() {
         JavaPlugin plugin = JavaPlugin.getProvidingPlugin(this.getClass());
         if (isAsync()) {
             this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, this.getDelay(), this.getPeriod());
@@ -44,7 +44,7 @@ public abstract class BukkitArena extends Arena implements TimePeriod {
     }
 
     @Override
-    public void clear() {
+    protected void clearArena() {
         if (this.task != null) {
             this.task.cancel();
         }

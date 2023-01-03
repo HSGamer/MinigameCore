@@ -6,17 +6,15 @@ import java.util.stream.Collectors;
 /**
  * The manager that handles all arenas
  */
-public abstract class ArenaManager implements Initializer {
+public class ArenaManager implements Initializer {
     private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
     private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
     private final List<Arena> arenaList = new LinkedList<>();
 
     @Override
     public void init() {
-        Optional.ofNullable(loadFeatures())
-                .ifPresent(features -> features.forEach(feature -> featureMap.put(feature.getClass(), feature)));
-        Optional.ofNullable(loadGameStates())
-                .ifPresent(gameStates -> gameStates.forEach(gameState -> gameStateMap.put(gameState.getClass(), gameState)));
+        loadFeatures().forEach(feature -> featureMap.put(feature.getClass(), feature));
+        loadGameStates().forEach(gameState -> gameStateMap.put(gameState.getClass(), gameState));
         featureMap.values().forEach(Initializer::init);
         gameStateMap.values().forEach(Initializer::init);
     }
@@ -42,14 +40,18 @@ public abstract class ArenaManager implements Initializer {
      *
      * @return the game states
      */
-    protected abstract List<GameState> loadGameStates();
+    protected List<GameState> loadGameStates() {
+        return Collections.emptyList();
+    }
 
     /**
      * Load the features for all arenas
      *
      * @return the features
      */
-    protected abstract List<Feature> loadFeatures();
+    protected List<Feature> loadFeatures() {
+        return Collections.emptyList();
+    }
 
     /**
      * Get the instance of the game state
@@ -100,7 +102,7 @@ public abstract class ArenaManager implements Initializer {
      * @param arena the arena
      */
     public boolean addArena(Arena arena) {
-        if (!featureMap.values().stream().allMatch(feature -> feature.isArenaSupported(arena))) return false;
+        if (!arena.isValid()) return false;
         arena.init();
         arenaList.add(arena);
         return true;
@@ -114,7 +116,6 @@ public abstract class ArenaManager implements Initializer {
     public void removeArena(Arena arena) {
         if (arenaList.remove(arena)) {
             arena.clear();
-            clearArenaFromArenaFeature(arena);
         }
     }
 
@@ -125,15 +126,7 @@ public abstract class ArenaManager implements Initializer {
         arenaList.forEach(arena -> {
             if (arena == null) return;
             arena.clear();
-            clearArenaFromArenaFeature(arena);
         });
         arenaList.clear();
-    }
-
-    private void clearArenaFromArenaFeature(Arena arena) {
-        featureMap.values().stream()
-                .filter(ArenaFeature.class::isInstance)
-                .map(ArenaFeature.class::cast)
-                .forEach(arenaFeature -> arenaFeature.clearFeature(arena));
     }
 }
