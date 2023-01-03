@@ -1,5 +1,9 @@
 package me.hsgamer.minigamecore.base;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A unit to register
  *
@@ -35,5 +39,27 @@ public final class Unit<T> {
     public Unit(T instance) {
         // noinspection unchecked
         this((Class<T>) instance.getClass(), instance);
+    }
+
+    /**
+     * Wrap the list of instances into a list of units
+     *
+     * @param list the list of instances
+     * @param <T>  the type of the unit
+     * @return the list of units
+     */
+    public static <T> List<Unit<T>> wrap(List<T> list) {
+        return list.stream().map(Unit::new).collect(Collectors.toList());
+    }
+
+    /**
+     * Wrap the array of instances into a list of units
+     *
+     * @param array the array of instances
+     * @param <T>   the type of the unit
+     * @return the list of units
+     */
+    public static <T> List<Unit<T>> wrap(T... array) {
+        return wrap(Arrays.asList(array));
     }
 }
