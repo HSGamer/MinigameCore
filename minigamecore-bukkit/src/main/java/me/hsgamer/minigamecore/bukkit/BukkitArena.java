@@ -3,7 +3,7 @@ package me.hsgamer.minigamecore.bukkit;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaManager;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.TimePeriod;
+import me.hsgamer.minigamecore.base.extra.TimePeriod;
 import me.hsgamer.minigamecore.bukkit.event.ArenaChangeStateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

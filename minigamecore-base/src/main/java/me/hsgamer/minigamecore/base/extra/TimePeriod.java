@@ -1,4 +1,4 @@
-package me.hsgamer.minigamecore.base;
+package me.hsgamer.minigamecore.base.extra;
 
 /**
  * The interface for dealing with time period

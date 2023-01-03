@@ -2,7 +2,7 @@ package me.hsgamer.minigamecore.standalone;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaManager;
-import me.hsgamer.minigamecore.base.TimePeriod;
+import me.hsgamer.minigamecore.base.extra.TimePeriod;
 
 import java.util.Timer;
 import java.util.TimerTask;

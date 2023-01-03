@@ -34,13 +34,4 @@ public interface GameState extends Initializer {
     default void end(Arena arena) {
         // EMPTY
     }
-
-    /**
-     * Get the display name representing the state
-     *
-     * @return the display name
-     */
-    default String getDisplayName() {
-        return getClass().getSimpleName();
-    }
 }
