@@ -4,7 +4,6 @@ import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaManager;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The {@link ArenaManager} with loaded arenas on initialization
@@ -28,13 +27,11 @@ public abstract class LoadedArenaManager extends ArenaManager {
      */
     public void reloadArena() {
         clearAllArenas();
-        Optional.ofNullable(loadArenas()).ifPresent(arenas -> {
-            for (Arena arena : arenas) {
-                if (addArena(arena)) {
-                    onArenaSucceedToLoad(arena);
-                } else {
-                    onArenaFailToLoad(arena);
-                }
+        loadArenas().forEach(arena -> {
+            if (addArena(arena)) {
+                onArenaSucceedToLoad(arena);
+            } else {
+                onArenaFailToLoad(arena);
             }
         });
     }
