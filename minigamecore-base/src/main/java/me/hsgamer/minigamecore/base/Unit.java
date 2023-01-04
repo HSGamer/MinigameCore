@@ -24,9 +24,8 @@ public final class Unit<T> {
      *
      * @param clazz    the class of the unit
      * @param instance the instance of the unit
-     * @param <R>      the type of the unit
      */
-    public <R extends T> Unit(Class<T> clazz, R instance) {
+    public Unit(Class<? extends T> clazz, T instance) {
         this.clazz = clazz;
         this.instance = instance;
     }
