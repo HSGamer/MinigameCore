@@ -15,14 +15,14 @@ public abstract class ArenaManager implements Initializer {
      *
      * @return the game states
      */
-    protected abstract List<Unit<GameState>> loadGameStates();
+    protected abstract List<GameState> loadGameStates();
 
     /**
      * Load the features for all arenas
      *
      * @return the features
      */
-    protected abstract List<Unit<Feature>> loadFeatures();
+    protected abstract List<Feature> loadFeatures();
 
     @Override
     public void init() {

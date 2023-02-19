@@ -39,19 +39,19 @@ class ArenaUnit implements Initializer {
     /**
      * Load the game states
      *
-     * @param units the units
+     * @param gameStates the game states
      */
-    void loadGameStates(List<Unit<GameState>> units) {
-        units.forEach(unit -> getSuperClasses(GameState.class, unit.clazz).forEach(clazz -> gameStateMap.put(clazz, unit.instance)));
+    void loadGameStates(List<GameState> gameStates) {
+        gameStates.forEach(gameState -> getSuperClasses(GameState.class, gameState.getClass()).forEach(clazz -> gameStateMap.put(clazz, gameState)));
     }
 
     /**
      * Load the features
      *
-     * @param units the units
+     * @param features the features
      */
-    void loadFeatures(List<Unit<Feature>> units) {
-        units.forEach(unit -> getSuperClasses(Feature.class, unit.clazz).forEach(clazz -> featureMap.put(clazz, unit.instance)));
+    void loadFeatures(List<Feature> features) {
+        features.forEach(feature -> getSuperClasses(Feature.class, feature.getClass()).forEach(clazz -> featureMap.put(clazz, feature)));
     }
 
     @Override

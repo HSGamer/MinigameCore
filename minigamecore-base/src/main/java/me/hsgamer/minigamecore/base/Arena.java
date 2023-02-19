@@ -31,7 +31,7 @@ public class Arena implements Runnable, Initializer {
      *
      * @return the game states
      */
-    protected List<Unit<GameState>> loadGameStates() {
+    protected List<GameState> loadGameStates() {
         return Collections.emptyList();
     }
 
@@ -40,7 +40,7 @@ public class Arena implements Runnable, Initializer {
      *
      * @return the features
      */
-    protected List<Unit<Feature>> loadFeatures() {
+    protected List<Feature> loadFeatures() {
         return Collections.emptyList();
     }
 
