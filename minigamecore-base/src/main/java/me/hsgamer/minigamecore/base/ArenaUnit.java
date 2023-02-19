@@ -1,6 +1,7 @@
 package me.hsgamer.minigamecore.base;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * An internal class for the arena {@link Feature} and {@link GameState}
@@ -36,6 +37,10 @@ class ArenaUnit implements Initializer {
         return classSet;
     }
 
+    private static <T> Stream<T> getDistinctInstanceStream(Collection<T> collection) {
+        return collection.stream().distinct();
+    }
+
     /**
      * Load the game states
      *
@@ -56,20 +61,20 @@ class ArenaUnit implements Initializer {
 
     @Override
     public void init() {
-        featureMap.values().forEach(Initializer::init);
-        gameStateMap.values().forEach(Initializer::init);
+        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::init);
+        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::init);
     }
 
     @Override
     public void postInit() {
-        featureMap.values().forEach(Initializer::postInit);
-        gameStateMap.values().forEach(Initializer::postInit);
+        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::postInit);
+        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::postInit);
     }
 
     @Override
     public void clear() {
-        gameStateMap.values().forEach(Initializer::clear);
-        featureMap.values().forEach(Initializer::clear);
+        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::clear);
+        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::clear);
         gameStateMap.clear();
         featureMap.clear();
     }
