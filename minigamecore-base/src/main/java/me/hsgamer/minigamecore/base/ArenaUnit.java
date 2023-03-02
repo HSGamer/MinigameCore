@@ -1,14 +1,15 @@
 package me.hsgamer.minigamecore.base;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * An internal class for the arena {@link Feature} and {@link GameState}
  */
 class ArenaUnit implements Initializer {
-    private final Map<Class<? extends GameState>, GameState> gameStateMap = new LinkedHashMap<>();
-    private final Map<Class<? extends Feature>, Feature> featureMap = new LinkedHashMap<>();
+    private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
+    private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
+    private final List<Feature> features = new ArrayList<>();
+    private final List<GameState> gameStates = new ArrayList<>();
 
     private static <T> Set<Class<? extends T>> getSuperClasses(Class<T> baseClass, Class<? extends T> childClass) {
         Set<Class<? extends T>> classSet = new HashSet<>();
@@ -37,16 +38,13 @@ class ArenaUnit implements Initializer {
         return classSet;
     }
 
-    private static <T> Stream<T> getDistinctInstanceStream(Collection<T> collection) {
-        return collection.stream().distinct();
-    }
-
     /**
      * Load the game states
      *
      * @param gameStates the game states
      */
     void loadGameStates(List<GameState> gameStates) {
+        this.gameStates.addAll(gameStates);
         gameStates.forEach(gameState -> getSuperClasses(GameState.class, gameState.getClass()).forEach(clazz -> gameStateMap.put(clazz, gameState)));
     }
 
@@ -56,27 +54,34 @@ class ArenaUnit implements Initializer {
      * @param features the features
      */
     void loadFeatures(List<Feature> features) {
+        this.features.addAll(features);
         features.forEach(feature -> getSuperClasses(Feature.class, feature.getClass()).forEach(clazz -> featureMap.put(clazz, feature)));
     }
 
     @Override
     public void init() {
-        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::init);
-        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::init);
+        features.forEach(Initializer::init);
+        gameStates.forEach(Initializer::init);
     }
 
     @Override
     public void postInit() {
-        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::postInit);
-        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::postInit);
+        features.forEach(Initializer::postInit);
+        gameStates.forEach(Initializer::postInit);
     }
 
     @Override
     public void clear() {
-        getDistinctInstanceStream(gameStateMap.values()).forEach(Initializer::clear);
-        getDistinctInstanceStream(featureMap.values()).forEach(Initializer::clear);
-        gameStateMap.clear();
+        for (int i = gameStates.size() - 1; i >= 0; i--) {
+            gameStates.get(i).clear();
+        }
+        for (int i = features.size() - 1; i >= 0; i--) {
+            features.get(i).clear();
+        }
         featureMap.clear();
+        gameStateMap.clear();
+        features.clear();
+        gameStates.clear();
     }
 
     /**
