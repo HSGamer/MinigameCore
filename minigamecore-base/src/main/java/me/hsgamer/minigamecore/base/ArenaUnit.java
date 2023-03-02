@@ -7,8 +7,8 @@ import java.util.stream.Stream;
  * An internal class for the arena {@link Feature} and {@link GameState}
  */
 class ArenaUnit implements Initializer {
-    private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
-    private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
+    private final Map<Class<? extends GameState>, GameState> gameStateMap = new LinkedHashMap<>();
+    private final Map<Class<? extends Feature>, Feature> featureMap = new LinkedHashMap<>();
 
     private static <T> Set<Class<? extends T>> getSuperClasses(Class<T> baseClass, Class<? extends T> childClass) {
         Set<Class<? extends T>> classSet = new HashSet<>();
