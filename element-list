@@ -3,6 +3,8 @@ me.hsgamer.minigamecore.base.extra
 me.hsgamer.minigamecore.bukkit
 me.hsgamer.minigamecore.bukkit.event
 me.hsgamer.minigamecore.bukkit.extra
+me.hsgamer.minigamecore.bukkit.hscore
+me.hsgamer.minigamecore.bukkit.simple
 me.hsgamer.minigamecore.implementation
 me.hsgamer.minigamecore.implementation.feature
 me.hsgamer.minigamecore.implementation.manager
