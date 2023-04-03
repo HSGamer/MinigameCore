@@ -43,6 +43,7 @@
         <module>minigamecore-base</module>
         <module>minigamecore-implementation</module>
         <module>minigamecore-bukkit</module>
+        <module>minigamecore-bukkit-simple</module>
         <module>minigamecore-standalone</module>
     </modules>
 
