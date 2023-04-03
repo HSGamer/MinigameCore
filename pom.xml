@@ -44,6 +44,7 @@
         <module>minigamecore-implementation</module>
         <module>minigamecore-bukkit</module>
         <module>minigamecore-bukkit-simple</module>
+        <module>minigamecore-bukkit-hscore</module>
         <module>minigamecore-standalone</module>
     </modules>
 
