@@ -12,6 +12,7 @@ import java.util.TimerTask;
  */
 public abstract class StandaloneArena extends Arena implements TimePeriod {
     private final Timer timer = new Timer();
+    private TimerTask timerTask;
 
     /**
      * Create a new arena
@@ -25,18 +26,20 @@ public abstract class StandaloneArena extends Arena implements TimePeriod {
 
     @Override
     protected void initArena() {
-        Runnable runnable = this;
-        this.timer.schedule(new TimerTask() {
+        this.timerTask = new TimerTask() {
             @Override
             public void run() {
-                runnable.run();
+                StandaloneArena.this.run();
             }
-        }, this.getDelay(), this.getPeriod());
+        };
+        this.timer.schedule(timerTask, this.getDelay(), this.getPeriod());
     }
 
     @Override
     protected void clearArena() {
-        this.timer.cancel();
+        if (this.timerTask != null) {
+            this.timerTask.cancel();
+        }
     }
 
     /**
