@@ -5,7 +5,6 @@ import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.minigamecore.base.ArenaManager;
 import me.hsgamer.minigamecore.base.extra.TimePeriod;
 import me.hsgamer.minigamecore.bukkit.BukkitArena;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * The implementation of {@link BukkitArena} that uses {@link me.hsgamer.hscore.bukkit.scheduler.Scheduler} to run the arena.
@@ -41,7 +40,7 @@ public class HSCoreBukkitArena extends BukkitArena implements TimePeriod {
 
     @Override
     protected void initArena() {
-        this.task = Scheduler.CURRENT.runTaskTimer(JavaPlugin.getProvidingPlugin(HSCoreBukkitArena.class), this, this.getDelay(), this.getPeriod(), isAsync());
+        this.task = Scheduler.providingPlugin(HSCoreBukkitArena.class).runner(isAsync()).runTaskTimer(this, this.getDelay(), this.getPeriod());
     }
 
     @Override
