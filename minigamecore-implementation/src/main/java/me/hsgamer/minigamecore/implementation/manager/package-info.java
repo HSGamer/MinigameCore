@@ -1,4 +1,4 @@
 /**
- * The implementation classes for {@link me.hsgamer.minigamecore.base.ArenaManager}
+ * The implementation classes for {@link me.hsgamer.minigamecore.manager.ArenaManager}
  */
 package me.hsgamer.minigamecore.implementation.manager;

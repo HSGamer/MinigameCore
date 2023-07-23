@@ -1,6 +1,6 @@
 package me.hsgamer.minigamecore.bukkit.extra;
 
-import me.hsgamer.minigamecore.base.extra.DisplayName;
+import me.hsgamer.minigamecore.extra.DisplayName;
 import org.bukkit.ChatColor;
 
 /**

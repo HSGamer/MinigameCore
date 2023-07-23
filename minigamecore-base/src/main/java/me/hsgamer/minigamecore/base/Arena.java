@@ -8,40 +8,29 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * The arena. The unit that handles the game
  */
-public class Arena implements Runnable, Initializer {
-    private final ArenaUnit arenaUnit = new ArenaUnit();
+public class Arena extends FeatureUnit implements Runnable {
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final AtomicReference<Class<? extends GameState>> nextState = new AtomicReference<>();
     private final String name;
-    private final ArenaManager arenaManager;
 
     /**
      * Create a new arena
      *
-     * @param name         the name of the arena
-     * @param arenaManager the arena manager
+     * @param name   the name of the arena
+     * @param parent the parent {@link FeatureUnit}
      */
-    public Arena(String name, ArenaManager arenaManager) {
+    public Arena(String name, FeatureUnit parent) {
+        super(parent);
         this.name = name;
-        this.arenaManager = arenaManager;
     }
 
     /**
-     * Load the game states for all arenas
+     * Create a new arena
      *
-     * @return the game states
+     * @param name the name of the arena
      */
-    protected List<GameState> loadGameStates() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Load the features for all arenas
-     *
-     * @return the features
-     */
-    protected List<Feature> loadFeatures() {
-        return Collections.emptyList();
+    public Arena(String name) {
+        this.name = name;
     }
 
     /**
@@ -95,23 +84,31 @@ public class Arena implements Runnable, Initializer {
     }
 
     @Override
+    protected List<GameState> loadGameStates() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected List<Feature> loadFeatures() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public final void init() {
-        arenaUnit.loadFeatures(loadFeatures());
-        arenaUnit.loadGameStates(loadGameStates());
-        arenaUnit.init();
+        super.init();
         initArena();
     }
 
     @Override
     public final void postInit() {
-        arenaUnit.postInit();
+        super.postInit();
         postInitArena();
     }
 
     @Override
     public final void clear() {
         clearArena();
-        arenaUnit.clear();
+        super.clear();
     }
 
     @Override
@@ -138,30 +135,6 @@ public class Arena implements Runnable, Initializer {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Get the manager that the arena is belonged to
-     *
-     * @return the manager
-     */
-    public ArenaManager getArenaManager() {
-        return arenaManager;
-    }
-
-    /**
-     * Get the instance of the game state
-     *
-     * @param gameStateClass the class of the game state
-     * @param <T>            the type of the game state
-     * @return the instance of the game state
-     */
-    public <T extends GameState> T getGameState(Class<T> gameStateClass) {
-        T gameState = arenaUnit.getGameState(gameStateClass);
-        if (gameState == null) {
-            gameState = arenaManager.getGameState(gameStateClass);
-        }
-        return gameState;
     }
 
     /**
@@ -207,27 +180,5 @@ public class Arena implements Runnable, Initializer {
      */
     public Optional<GameState> getNextStateInstance() {
         return Optional.ofNullable(getNextState()).map(this::getGameState);
-    }
-
-    /**
-     * Get the instance of the feature
-     *
-     * @param featureClass the class of the feature
-     * @param <T>          the type of the feature
-     * @return the instance of the feature
-     */
-    public <T extends Feature> T getFeature(Class<T> featureClass) {
-        T feature = arenaUnit.getFeature(featureClass);
-        if (feature == null) {
-            feature = arenaManager.getFeature(featureClass);
-        }
-        return feature;
-    }
-
-    /**
-     * Convenient method. Remove the arena from the arena manager
-     */
-    public void removeFromManager() {
-        arenaManager.removeArena(this);
     }
 }

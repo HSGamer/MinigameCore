@@ -1,4 +1,7 @@
-package me.hsgamer.minigamecore.base;
+package me.hsgamer.minigamecore.manager;
+
+import me.hsgamer.minigamecore.base.Arena;
+import me.hsgamer.minigamecore.base.FeatureUnit;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -6,63 +9,35 @@ import java.util.stream.Collectors;
 /**
  * The manager that handles all arenas
  */
-public abstract class ArenaManager implements Initializer {
-    private final ArenaUnit arenaUnit = new ArenaUnit();
+public abstract class ArenaManager extends FeatureUnit {
     private final List<Arena> arenaList = new LinkedList<>();
 
     /**
-     * Load the game states for all arenas
+     * Create a new arena manager
      *
-     * @return the game states
+     * @param parentFeatureUnit the parent {@link FeatureUnit}
      */
-    protected abstract List<GameState> loadGameStates();
+    public ArenaManager(FeatureUnit parentFeatureUnit) {
+        super(parentFeatureUnit);
+    }
 
     /**
-     * Load the features for all arenas
-     *
-     * @return the features
+     * Create a new arena manager
      */
-    protected abstract List<Feature> loadFeatures();
-
-    @Override
-    public void init() {
-        arenaUnit.loadFeatures(loadFeatures());
-        arenaUnit.loadGameStates(loadGameStates());
-        arenaUnit.init();
+    public ArenaManager() {
+        super();
     }
 
     @Override
     public void postInit() {
-        arenaUnit.postInit();
+        super.postInit();
         arenaList.forEach(Arena::postInit);
     }
 
     @Override
     public void clear() {
         clearAllArenas();
-        arenaUnit.clear();
-    }
-
-    /**
-     * Get the instance of the game state
-     *
-     * @param gameStateClass the class of the game state
-     * @param <T>            the type of the game state
-     * @return the instance of the game state
-     */
-    public <T extends GameState> T getGameState(Class<T> gameStateClass) {
-        return arenaUnit.getGameState(gameStateClass);
-    }
-
-    /**
-     * Get the instance of the feature
-     *
-     * @param featureClass the class of the feature
-     * @param <T>          the type of the feature
-     * @return the instance of the feature
-     */
-    public <T extends Feature> T getFeature(Class<T> featureClass) {
-        return arenaUnit.getFeature(featureClass);
+        super.clear();
     }
 
     /**

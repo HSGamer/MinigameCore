@@ -30,5 +30,10 @@
             <artifactId>minigamecore-base</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>minigamecore-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

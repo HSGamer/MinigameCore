@@ -3,13 +3,30 @@ package me.hsgamer.minigamecore.base;
 import java.util.*;
 
 /**
- * An internal class for the arena {@link Feature} and {@link GameState}
+ * A unit to handle the arena {@link Feature} and {@link GameState}
  */
-class ArenaUnit implements Initializer {
+public abstract class FeatureUnit implements Initializer {
     private final Map<Class<? extends GameState>, GameState> gameStateMap = new IdentityHashMap<>();
     private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
     private final List<Feature> features = new ArrayList<>();
     private final List<GameState> gameStates = new ArrayList<>();
+    private final FeatureUnit parent;
+
+    /**
+     * Create a new {@link FeatureUnit}
+     *
+     * @param parent the parent {@link FeatureUnit}
+     */
+    public FeatureUnit(FeatureUnit parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * Create a new {@link FeatureUnit}
+     */
+    public FeatureUnit() {
+        this(null);
+    }
 
     private static <T> Set<Class<? extends T>> getSuperClasses(Class<T> baseClass, Class<? extends T> childClass) {
         Set<Class<? extends T>> classSet = new HashSet<>();
@@ -41,25 +58,34 @@ class ArenaUnit implements Initializer {
     /**
      * Load the game states
      *
-     * @param gameStates the game states
+     * @return the game states
      */
-    void loadGameStates(List<GameState> gameStates) {
-        this.gameStates.addAll(gameStates);
-        gameStates.forEach(gameState -> getSuperClasses(GameState.class, gameState.getClass()).forEach(clazz -> gameStateMap.put(clazz, gameState)));
-    }
+    protected abstract List<GameState> loadGameStates();
 
     /**
      * Load the features
      *
-     * @param features the features
+     * @return the features
      */
-    void loadFeatures(List<Feature> features) {
-        this.features.addAll(features);
-        features.forEach(feature -> getSuperClasses(Feature.class, feature.getClass()).forEach(clazz -> featureMap.put(clazz, feature)));
+    protected abstract List<Feature> loadFeatures();
+
+    /**
+     * Get the parent {@link FeatureUnit}
+     *
+     * @return the parent {@link FeatureUnit} or null if not present
+     */
+    public FeatureUnit getParent() {
+        return parent;
     }
 
     @Override
     public void init() {
+        this.gameStates.addAll(loadGameStates());
+        gameStates.forEach(gameState -> getSuperClasses(GameState.class, gameState.getClass()).forEach(clazz -> gameStateMap.put(clazz, gameState)));
+
+        this.features.addAll(loadFeatures());
+        features.forEach(feature -> getSuperClasses(Feature.class, feature.getClass()).forEach(clazz -> featureMap.put(clazz, feature)));
+
         features.forEach(Initializer::init);
         gameStates.forEach(Initializer::init);
     }
@@ -91,9 +117,13 @@ class ArenaUnit implements Initializer {
      * @param <T>            the type of the game state
      * @return the instance of the game state
      */
-    <T extends GameState> T getGameState(Class<T> gameStateClass) {
+    public <T extends GameState> T getGameState(Class<T> gameStateClass) {
         GameState gameState = gameStateMap.get(gameStateClass);
-        return gameStateClass.isInstance(gameState) ? gameStateClass.cast(gameState) : null;
+        T checkedGameState = gameStateClass.isInstance(gameState) ? gameStateClass.cast(gameState) : null;
+        if (checkedGameState != null) {
+            return checkedGameState;
+        }
+        return parent != null ? parent.getGameState(gameStateClass) : null;
     }
 
     /**
@@ -103,8 +133,12 @@ class ArenaUnit implements Initializer {
      * @param <T>          the type of the feature
      * @return the instance of the feature
      */
-    <T extends Feature> T getFeature(Class<T> featureClass) {
+    public <T extends Feature> T getFeature(Class<T> featureClass) {
         Feature feature = featureMap.get(featureClass);
-        return featureClass.isInstance(feature) ? featureClass.cast(feature) : null;
+        T checkedFeature = featureClass.isInstance(feature) ? featureClass.cast(feature) : null;
+        if (checkedFeature != null) {
+            return checkedFeature;
+        }
+        return parent != null ? parent.getFeature(featureClass) : null;
     }
 }

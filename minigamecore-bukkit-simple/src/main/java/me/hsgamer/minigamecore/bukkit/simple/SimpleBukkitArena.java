@@ -1,8 +1,8 @@
 package me.hsgamer.minigamecore.bukkit.simple;
 
-import me.hsgamer.minigamecore.base.ArenaManager;
-import me.hsgamer.minigamecore.base.extra.TimePeriod;
+import me.hsgamer.minigamecore.base.FeatureUnit;
 import me.hsgamer.minigamecore.bukkit.BukkitArena;
+import me.hsgamer.minigamecore.extra.TimePeriod;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,11 +17,20 @@ public class SimpleBukkitArena extends BukkitArena implements TimePeriod {
     /**
      * Create a new arena
      *
-     * @param name         the name of the arena
-     * @param arenaManager the arena manager
+     * @param name   the name of the arena
+     * @param parent the parent {@link FeatureUnit}
      */
-    public SimpleBukkitArena(String name, ArenaManager arenaManager) {
-        super(name, arenaManager);
+    public SimpleBukkitArena(String name, FeatureUnit parent) {
+        super(name, parent);
+    }
+
+    /**
+     * Create a new arena
+     *
+     * @param name the name of the arena
+     */
+    public SimpleBukkitArena(String name) {
+        super(name);
     }
 
     @Override

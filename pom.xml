@@ -41,6 +41,8 @@
 
     <modules>
         <module>minigamecore-base</module>
+        <module>minigamecore-extra</module>
+        <module>minigamecore-manager</module>
         <module>minigamecore-implementation</module>
         <module>minigamecore-bukkit</module>
         <module>minigamecore-bukkit-simple</module>

@@ -1,7 +1,7 @@
 package me.hsgamer.minigamecore.implementation.manager;
 
 import me.hsgamer.minigamecore.base.Arena;
-import me.hsgamer.minigamecore.base.ArenaManager;
+import me.hsgamer.minigamecore.manager.ArenaManager;
 
 import java.util.List;
 
