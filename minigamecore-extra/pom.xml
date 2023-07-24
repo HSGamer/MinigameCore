@@ -10,4 +10,12 @@
     </parent>
 
     <artifactId>minigamecore-extra</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>minigamecore-manager</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
