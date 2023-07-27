@@ -141,4 +141,32 @@ public abstract class FeatureUnit implements Initializer {
         }
         return parent != null ? parent.getFeature(featureClass) : null;
     }
+
+    /**
+     * Get all classes of the game states
+     *
+     * @param deep if true, it will get all classes of the game states from the parent
+     * @return the classes
+     */
+    public Set<Class<? extends GameState>> getGameStates(boolean deep) {
+        Set<Class<? extends GameState>> classes = new HashSet<>(gameStateMap.keySet());
+        if (deep && parent != null) {
+            classes.addAll(parent.getGameStates(true));
+        }
+        return Collections.unmodifiableSet(classes);
+    }
+
+    /**
+     * Get all classes of the features
+     *
+     * @param deep if true, it will get all classes of the features from the parent
+     * @return the classes
+     */
+    public Set<Class<? extends Feature>> getFeatures(boolean deep) {
+        Set<Class<? extends Feature>> classes = new HashSet<>(featureMap.keySet());
+        if (deep && parent != null) {
+            classes.addAll(parent.getFeatures(true));
+        }
+        return Collections.unmodifiableSet(classes);
+    }
 }
