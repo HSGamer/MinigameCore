@@ -1,6 +1,7 @@
 package me.hsgamer.minigamecore.implementation.manager;
 
 import me.hsgamer.minigamecore.base.Arena;
+import me.hsgamer.minigamecore.base.FeatureUnit;
 import me.hsgamer.minigamecore.manager.ArenaManager;
 
 import java.util.List;
@@ -9,6 +10,24 @@ import java.util.List;
  * The {@link ArenaManager} with loaded arenas on initialization
  */
 public abstract class LoadedArenaManager extends ArenaManager {
+    /**
+     * Create a new arena manager
+     *
+     * @param parentList the parent {@link FeatureUnit} list
+     */
+    public LoadedArenaManager(List<FeatureUnit> parentList) {
+        super(parentList);
+    }
+
+    /**
+     * Create a new arena manager
+     *
+     * @param parent the parent {@link FeatureUnit}
+     */
+    public LoadedArenaManager(FeatureUnit... parent) {
+        super(parent);
+    }
+
     @Override
     public void init() {
         super.init();

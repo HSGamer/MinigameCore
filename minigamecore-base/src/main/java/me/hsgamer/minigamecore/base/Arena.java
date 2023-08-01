@@ -16,20 +16,22 @@ public class Arena extends FeatureUnit implements Runnable {
     /**
      * Create a new arena
      *
-     * @param name   the name of the arena
-     * @param parent the parent {@link FeatureUnit}
+     * @param name       the name of the arena
+     * @param parentList the parent {@link FeatureUnit} list
      */
-    public Arena(String name, FeatureUnit parent) {
-        super(parent);
+    public Arena(String name, List<FeatureUnit> parentList) {
+        super(parentList);
         this.name = name;
     }
 
     /**
      * Create a new arena
      *
-     * @param name the name of the arena
+     * @param name   the name of the arena
+     * @param parent the parent {@link FeatureUnit}
      */
-    public Arena(String name) {
+    public Arena(String name, FeatureUnit... parent) {
+        super(parent);
         this.name = name;
     }
 

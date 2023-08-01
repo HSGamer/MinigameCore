@@ -10,22 +10,24 @@ public abstract class FeatureUnit implements Initializer {
     private final Map<Class<? extends Feature>, Feature> featureMap = new IdentityHashMap<>();
     private final List<Feature> features = new ArrayList<>();
     private final List<GameState> gameStates = new ArrayList<>();
-    private final FeatureUnit parent;
+    private final List<FeatureUnit> parentList;
+
+    /**
+     * Create a new {@link FeatureUnit}
+     *
+     * @param parentList the parent {@link FeatureUnit} list
+     */
+    public FeatureUnit(List<FeatureUnit> parentList) {
+        this.parentList = parentList;
+    }
 
     /**
      * Create a new {@link FeatureUnit}
      *
      * @param parent the parent {@link FeatureUnit}
      */
-    public FeatureUnit(FeatureUnit parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * Create a new {@link FeatureUnit}
-     */
-    public FeatureUnit() {
-        this(null);
+    public FeatureUnit(FeatureUnit... parent) {
+        this(parent.length == 0 ? Collections.emptyList() : Arrays.asList(parent));
     }
 
     private static <T> Set<Class<? extends T>> getSuperClasses(Class<T> baseClass, Class<? extends T> childClass) {
@@ -70,12 +72,23 @@ public abstract class FeatureUnit implements Initializer {
     protected abstract List<Feature> loadFeatures();
 
     /**
-     * Get the parent {@link FeatureUnit}
+     * Get the parent {@link FeatureUnit}.
+     * It takes the first element from the result of {@link #getParentList()}.
+     * If the result is empty, it will return null
      *
      * @return the parent {@link FeatureUnit} or null if not present
      */
     public FeatureUnit getParent() {
-        return parent;
+        return parentList.isEmpty() ? null : parentList.get(0);
+    }
+
+    /**
+     * Set the parent {@link FeatureUnit} list
+     *
+     * @return the parent {@link FeatureUnit} list
+     */
+    public List<FeatureUnit> getParentList() {
+        return parentList;
     }
 
     @Override
@@ -123,7 +136,15 @@ public abstract class FeatureUnit implements Initializer {
         if (checkedGameState != null) {
             return checkedGameState;
         }
-        return parent != null ? parent.getGameState(gameStateClass) : null;
+
+        for (FeatureUnit parent : parentList) {
+            checkedGameState = parent.getGameState(gameStateClass);
+            if (checkedGameState != null) {
+                return checkedGameState;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -139,7 +160,15 @@ public abstract class FeatureUnit implements Initializer {
         if (checkedFeature != null) {
             return checkedFeature;
         }
-        return parent != null ? parent.getFeature(featureClass) : null;
+
+        for (FeatureUnit parent : parentList) {
+            checkedFeature = parent.getFeature(featureClass);
+            if (checkedFeature != null) {
+                return checkedFeature;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -150,8 +179,10 @@ public abstract class FeatureUnit implements Initializer {
      */
     public Set<Class<? extends GameState>> getGameStates(boolean deep) {
         Set<Class<? extends GameState>> classes = new HashSet<>(gameStateMap.keySet());
-        if (deep && parent != null) {
-            classes.addAll(parent.getGameStates(true));
+        if (deep) {
+            for (FeatureUnit parent : parentList) {
+                classes.addAll(parent.getGameStates(true));
+            }
         }
         return Collections.unmodifiableSet(classes);
     }
@@ -164,8 +195,10 @@ public abstract class FeatureUnit implements Initializer {
      */
     public Set<Class<? extends Feature>> getFeatures(boolean deep) {
         Set<Class<? extends Feature>> classes = new HashSet<>(featureMap.keySet());
-        if (deep && parent != null) {
-            classes.addAll(parent.getFeatures(true));
+        if (deep) {
+            for (FeatureUnit parent : parentList) {
+                classes.addAll(parent.getFeatures(true));
+            }
         }
         return Collections.unmodifiableSet(classes);
     }

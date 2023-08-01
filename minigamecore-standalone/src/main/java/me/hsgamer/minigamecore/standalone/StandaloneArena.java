@@ -4,6 +4,7 @@ import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.FeatureUnit;
 import me.hsgamer.minigamecore.extra.TimePeriod;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,20 +18,21 @@ public abstract class StandaloneArena extends Arena implements TimePeriod {
     /**
      * Create a new arena
      *
-     * @param name   the name of the arena
-     * @param parent the parent {@link FeatureUnit}
+     * @param name       the name of the arena
+     * @param parentList the parent {@link FeatureUnit} list
      */
-    protected StandaloneArena(String name, FeatureUnit parent) {
-        super(name, parent);
+    public StandaloneArena(String name, List<FeatureUnit> parentList) {
+        super(name, parentList);
     }
 
     /**
      * Create a new arena
      *
-     * @param name the name of the arena
+     * @param name   the name of the arena
+     * @param parent the parent {@link FeatureUnit}
      */
-    protected StandaloneArena(String name) {
-        super(name);
+    public StandaloneArena(String name, FeatureUnit... parent) {
+        super(name, parent);
     }
 
     @Override

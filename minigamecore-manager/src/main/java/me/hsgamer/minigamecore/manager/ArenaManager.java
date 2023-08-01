@@ -17,17 +17,19 @@ public abstract class ArenaManager extends FeatureUnit {
     /**
      * Create a new arena manager
      *
-     * @param parentFeatureUnit the parent {@link FeatureUnit}
+     * @param parentList the parent {@link FeatureUnit} list
      */
-    public ArenaManager(FeatureUnit parentFeatureUnit) {
-        super(parentFeatureUnit);
+    public ArenaManager(List<FeatureUnit> parentList) {
+        super(parentList);
     }
 
     /**
      * Create a new arena manager
+     *
+     * @param parent the parent {@link FeatureUnit}
      */
-    public ArenaManager() {
-        super();
+    public ArenaManager(FeatureUnit... parent) {
+        super(parent);
     }
 
     @Override

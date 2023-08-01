@@ -2,7 +2,6 @@ package me.hsgamer.minigamecore.manager;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.FeatureUnit;
-import me.hsgamer.minigamecore.manager.ArenaManager;
 
 /**
  * An extension of {@link Arena} that can be managed by {@link ArenaManager}
