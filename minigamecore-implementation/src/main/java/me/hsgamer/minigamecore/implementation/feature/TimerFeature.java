@@ -52,6 +52,24 @@ public class TimerFeature implements Feature {
         setDuration(unit.toMillis(duration));
     }
 
+    /**
+     * Check if the timer is running
+     *
+     * @return true if it is
+     */
+    public boolean isRunning() {
+        return getDuration() > 0;
+    }
+
+    /**
+     * Check if the timer is not running
+     *
+     * @return true if it is
+     */
+    public boolean isNotRunning() {
+        return !isRunning();
+    }
+
     @Override
     public void clear() {
         currentEndTime.lazySet(0);
