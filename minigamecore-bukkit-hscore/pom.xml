@@ -33,7 +33,7 @@
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-bukkit-scheduler</artifactId>
-            <version>4.3.21</version>
+            <version>4.3.23</version>
         </dependency>
     </dependencies>
 </project>
