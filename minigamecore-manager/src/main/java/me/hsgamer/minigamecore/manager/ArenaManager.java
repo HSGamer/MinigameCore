@@ -11,9 +11,10 @@ import java.util.function.Function;
  * The manager that handles all arenas
  *
  * @param <T> the type of the identifier of the arena
+ * @param <A> the type of the arena
  */
-public abstract class ArenaManager<T> extends FeatureUnit {
-    private final Map<T, Arena> arenaMap = new HashMap<>();
+public abstract class ArenaManager<T, A extends Arena & ManagedArena<T>> extends FeatureUnit {
+    private final Map<T, A> arenaMap = new HashMap<>();
 
     /**
      * Create a new arena manager
@@ -61,7 +62,7 @@ public abstract class ArenaManager<T> extends FeatureUnit {
      * @param identifier the identifier
      * @return the arena
      */
-    public Optional<Arena> getArena(T identifier) {
+    public Optional<A> getArena(T identifier) {
         return Optional.ofNullable(arenaMap.get(identifier));
     }
 
@@ -70,7 +71,7 @@ public abstract class ArenaManager<T> extends FeatureUnit {
      *
      * @return the arena map
      */
-    public Map<T, Arena> getArenaMap() {
+    public Map<T, A> getArenaMap() {
         return Collections.unmodifiableMap(arenaMap);
     }
 
@@ -79,23 +80,17 @@ public abstract class ArenaManager<T> extends FeatureUnit {
      *
      * @return the collection of arenas
      */
-    public Collection<Arena> getAllArenas() {
+    public Collection<A> getAllArenas() {
         return Collections.unmodifiableCollection(arenaMap.values());
     }
 
     /**
-     * Add an arena.
-     * The arena must be an instance of {@link ManagedArena}.
+     * Add an arena
      *
      * @param arena the arena
      */
-    public boolean addArena(Arena arena) {
-        if (!(arena instanceof ManagedArena)) {
-            throw new IllegalArgumentException("The arena must be an instance of ManagedArena");
-        }
-
-        //noinspection unchecked
-        T identifier = ((ManagedArena<T>) arena).getIdentifier();
+    public boolean addArena(A arena) {
+        T identifier = arena.getIdentifier();
 
         if (arenaMap.containsKey(identifier)) return false;
 
@@ -104,25 +99,6 @@ public abstract class ArenaManager<T> extends FeatureUnit {
 
         arenaMap.put(identifier, arena);
         return true;
-    }
-
-    /**
-     * Remove an arena.
-     * The arena must be an instance of {@link ManagedArena}.
-     *
-     * @param arena the arena
-     */
-    public void removeArena(Arena arena) {
-        if (!(arena instanceof ManagedArena)) {
-            throw new IllegalArgumentException("The arena must be an instance of ManagedArena");
-        }
-
-        //noinspection unchecked
-        T identifier = ((ManagedArena<T>) arena).getIdentifier();
-
-        if (arenaMap.remove(identifier) != null) {
-            arena.clear();
-        }
     }
 
     /**
@@ -154,10 +130,9 @@ public abstract class ArenaManager<T> extends FeatureUnit {
      * @param identifier       the identifier
      * @param arenaCreator     the arena creator
      * @param onCreateConsumer the consumer that will be called when the arena is created
-     * @param <A>              the type of the arena
      * @return the created arena
      */
-    public <A extends Arena & ManagedArena<T>> Optional<A> createArena(T identifier, Function<T, A> arenaCreator, Consumer<A> onCreateConsumer) {
+    public Optional<A> createArena(T identifier, Function<T, A> arenaCreator, Consumer<A> onCreateConsumer) {
         if (containsArena(identifier)) return Optional.empty();
 
         A arena = arenaCreator.apply(identifier);

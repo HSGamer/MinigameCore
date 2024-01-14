@@ -13,7 +13,7 @@ import java.util.List;
  * @param <T> the type of the identifier of the arena
  * @param <A> the type of the arena
  */
-public abstract class LoadedArenaManager<T, A extends Arena & ManagedArena<T>> extends ArenaManager<T> {
+public abstract class LoadedArenaManager<T, A extends Arena & ManagedArena<T>> extends ArenaManager<T, A> {
     /**
      * Create a new arena manager
      *

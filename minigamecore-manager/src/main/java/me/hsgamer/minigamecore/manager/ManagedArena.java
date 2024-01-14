@@ -25,7 +25,7 @@ public interface ManagedArena<T> {
             FeatureUnit parentUnit = arena.getParent();
             if (parentUnit instanceof ArenaManager) {
                 //noinspection unchecked
-                ((ArenaManager<T>) parentUnit).removeArena(getIdentifier());
+                ((ArenaManager<T, ?>) parentUnit).removeArena(getIdentifier());
             }
         }
     }
