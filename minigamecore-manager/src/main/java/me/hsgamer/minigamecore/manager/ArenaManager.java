@@ -110,6 +110,13 @@ public abstract class ArenaManager extends FeatureUnit {
         T arena = null;
 
         try {
+            Constructor<T> constructor = arenaClass.getConstructor(String.class, this.getClass());
+            arena = constructor.newInstance(name, this);
+        } catch (Exception ignored) {
+            // IGNORED
+        }
+
+        try {
             Constructor<T> constructor = arenaClass.getConstructor(String.class, FeatureUnit.class);
             arena = constructor.newInstance(name, this);
         } catch (Exception ignored) {
