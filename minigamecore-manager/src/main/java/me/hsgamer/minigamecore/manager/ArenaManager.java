@@ -6,13 +6,12 @@ import me.hsgamer.minigamecore.base.FeatureUnit;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * The manager that handles all arenas
  */
 public abstract class ArenaManager extends FeatureUnit {
-    private final List<Arena> arenaList = new LinkedList<>();
+    private final Map<String, Arena> arenaMap = new HashMap<>();
 
     /**
      * Create a new arena manager
@@ -35,7 +34,7 @@ public abstract class ArenaManager extends FeatureUnit {
     @Override
     public void postInit() {
         super.postInit();
-        arenaList.forEach(Arena::postInit);
+        arenaMap.values().forEach(Arena::postInit);
     }
 
     @Override
@@ -51,7 +50,7 @@ public abstract class ArenaManager extends FeatureUnit {
      * @return the arena
      */
     public Optional<Arena> getArenaByName(String name) {
-        return arenaList.parallelStream().filter(arena -> arena.getName().equals(name)).findFirst();
+        return Optional.ofNullable(arenaMap.get(name));
     }
 
     /**
@@ -60,7 +59,7 @@ public abstract class ArenaManager extends FeatureUnit {
      * @return the list of arenas
      */
     public List<Arena> getAllArenas() {
-        return Collections.unmodifiableList(arenaList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        return new ArrayList<>(arenaMap.values());
     }
 
     /**
@@ -69,9 +68,13 @@ public abstract class ArenaManager extends FeatureUnit {
      * @param arena the arena
      */
     public boolean addArena(Arena arena) {
+        String name = arena.getName();
+        if (arenaMap.containsKey(name)) return false;
+
         if (!arena.isValid()) return false;
         arena.init();
-        arenaList.add(arena);
+
+        arenaMap.put(name, arena);
         return true;
     }
 
@@ -81,8 +84,21 @@ public abstract class ArenaManager extends FeatureUnit {
      * @param arena the arena
      */
     public void removeArena(Arena arena) {
-        if (arenaList.remove(arena)) {
-            arena.clear();
+        Arena removed = arenaMap.remove(arena.getName());
+        if (removed != null) {
+            removed.clear();
+        }
+    }
+
+    /**
+     * Remove an arena
+     *
+     * @param name the name of the arena
+     */
+    public void removeArena(String name) {
+        Arena removed = arenaMap.remove(name);
+        if (removed != null) {
+            removed.clear();
         }
     }
 
@@ -90,11 +106,11 @@ public abstract class ArenaManager extends FeatureUnit {
      * Clear all arenas
      */
     public void clearAllArenas() {
-        arenaList.forEach(arena -> {
+        arenaMap.values().forEach(arena -> {
             if (arena == null) return;
             arena.clear();
         });
-        arenaList.clear();
+        arenaMap.clear();
     }
 
     /**
