@@ -43,7 +43,8 @@
         <module>minigamecore-base</module>
         <module>minigamecore-manager</module>
         <module>minigamecore-extra</module>
-        <module>minigamecore-implementation</module>
+        <module>minigamecore-manager-extra</module>
+        <module>minigamecore-feature</module>
         <module>minigamecore-bukkit</module>
         <module>minigamecore-bukkit-simple</module>
         <module>minigamecore-bukkit-hscore</module>

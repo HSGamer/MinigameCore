@@ -1,4 +1,4 @@
-package me.hsgamer.minigamecore.implementation.manager;
+package me.hsgamer.minigamecore.manager.extra;
 
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.FeatureUnit;
