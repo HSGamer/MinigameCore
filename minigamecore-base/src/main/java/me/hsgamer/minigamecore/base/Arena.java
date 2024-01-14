@@ -11,28 +11,23 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Arena extends FeatureUnit implements Runnable {
     private final AtomicReference<Class<? extends GameState>> currentState = new AtomicReference<>();
     private final AtomicReference<Class<? extends GameState>> nextState = new AtomicReference<>();
-    private final String name;
 
     /**
      * Create a new arena
      *
-     * @param name       the name of the arena
      * @param parentList the parent {@link FeatureUnit} list
      */
-    public Arena(String name, List<FeatureUnit> parentList) {
+    public Arena(List<FeatureUnit> parentList) {
         super(parentList);
-        this.name = name;
     }
 
     /**
      * Create a new arena
      *
-     * @param name   the name of the arena
      * @param parent the parent {@link FeatureUnit}
      */
-    public Arena(String name, FeatureUnit... parent) {
+    public Arena(FeatureUnit... parent) {
         super(parent);
-        this.name = name;
     }
 
     /**
@@ -128,15 +123,6 @@ public class Arena extends FeatureUnit implements Runnable {
             }
         }
         currentStateOptional.ifPresent(gameState -> gameState.update(this));
-    }
-
-    /**
-     * Get the name of the arena
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
     }
 
     /**

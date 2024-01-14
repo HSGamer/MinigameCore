@@ -3,13 +3,17 @@ package me.hsgamer.minigamecore.implementation.manager;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.FeatureUnit;
 import me.hsgamer.minigamecore.manager.ArenaManager;
+import me.hsgamer.minigamecore.manager.ManagedArena;
 
 import java.util.List;
 
 /**
  * The {@link ArenaManager} with loaded arenas on initialization
+ *
+ * @param <T> the type of the identifier of the arena
+ * @param <A> the type of the arena
  */
-public abstract class LoadedArenaManager extends ArenaManager {
+public abstract class LoadedArenaManager<T, A extends Arena & ManagedArena<T>> extends ArenaManager<T> {
     /**
      * Create a new arena manager
      *
@@ -39,7 +43,7 @@ public abstract class LoadedArenaManager extends ArenaManager {
      *
      * @return the arenas
      */
-    protected abstract List<Arena> loadArenas();
+    protected abstract List<A> loadArenas();
 
     /**
      * Reload the arenas
@@ -60,7 +64,7 @@ public abstract class LoadedArenaManager extends ArenaManager {
      *
      * @param arena the arena
      */
-    public void onArenaFailToLoad(Arena arena) {
+    public void onArenaFailToLoad(A arena) {
         // EMPTY
     }
 
@@ -69,7 +73,7 @@ public abstract class LoadedArenaManager extends ArenaManager {
      *
      * @param arena the arena
      */
-    public void onArenaSucceedToLoad(Arena arena) {
+    public void onArenaSucceedToLoad(A arena) {
         // EMPTY
     }
 }

@@ -5,8 +5,17 @@ import me.hsgamer.minigamecore.base.FeatureUnit;
 
 /**
  * An extension of {@link Arena} that can be managed by {@link ArenaManager}
+ *
+ * @param <T> the type of the identifier of the arena
  */
-public interface ManagedArena {
+public interface ManagedArena<T> {
+    /**
+     * Get the identifier of the arena
+     *
+     * @return the identifier
+     */
+    T getIdentifier();
+
     /**
      * Convenient method. Remove the arena from the arena manager
      */
@@ -15,7 +24,8 @@ public interface ManagedArena {
             Arena arena = (Arena) this;
             FeatureUnit parentUnit = arena.getParent();
             if (parentUnit instanceof ArenaManager) {
-                ((ArenaManager) parentUnit).removeArena(arena);
+                //noinspection unchecked
+                ((ArenaManager<T>) parentUnit).removeArena(getIdentifier());
             }
         }
     }

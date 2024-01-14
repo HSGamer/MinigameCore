@@ -3,15 +3,17 @@ package me.hsgamer.minigamecore.manager;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.FeatureUnit;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * The manager that handles all arenas
+ *
+ * @param <T> the type of the identifier of the arena
  */
-public abstract class ArenaManager extends FeatureUnit {
-    private final Map<String, Arena> arenaMap = new HashMap<>();
+public abstract class ArenaManager<T> extends FeatureUnit {
+    private final Map<T, Arena> arenaMap = new HashMap<>();
 
     /**
      * Create a new arena manager
@@ -44,59 +46,92 @@ public abstract class ArenaManager extends FeatureUnit {
     }
 
     /**
-     * Get the arena by its name
+     * Check if the arena manager contains the arena
      *
-     * @param name the name of the arena
+     * @param identifier the identifier
+     * @return true if it does
+     */
+    public boolean containsArena(T identifier) {
+        return arenaMap.containsKey(identifier);
+    }
+
+    /**
+     * Get the arena by its identifier
+     *
+     * @param identifier the identifier
      * @return the arena
      */
-    public Optional<Arena> getArenaByName(String name) {
-        return Optional.ofNullable(arenaMap.get(name));
+    public Optional<Arena> getArena(T identifier) {
+        return Optional.ofNullable(arenaMap.get(identifier));
+    }
+
+    /**
+     * Get the arena map
+     *
+     * @return the arena map
+     */
+    public Map<T, Arena> getArenaMap() {
+        return Collections.unmodifiableMap(arenaMap);
     }
 
     /**
      * Get all arenas
      *
-     * @return the list of arenas
+     * @return the collection of arenas
      */
-    public List<Arena> getAllArenas() {
-        return new ArrayList<>(arenaMap.values());
+    public Collection<Arena> getAllArenas() {
+        return Collections.unmodifiableCollection(arenaMap.values());
     }
 
     /**
-     * Add an arena
+     * Add an arena.
+     * The arena must be an instance of {@link ManagedArena}.
      *
      * @param arena the arena
      */
     public boolean addArena(Arena arena) {
-        String name = arena.getName();
-        if (arenaMap.containsKey(name)) return false;
+        if (!(arena instanceof ManagedArena)) {
+            throw new IllegalArgumentException("The arena must be an instance of ManagedArena");
+        }
+
+        //noinspection unchecked
+        T identifier = ((ManagedArena<T>) arena).getIdentifier();
+
+        if (arenaMap.containsKey(identifier)) return false;
 
         if (!arena.isValid()) return false;
         arena.init();
 
-        arenaMap.put(name, arena);
+        arenaMap.put(identifier, arena);
         return true;
     }
 
     /**
-     * Remove an arena
+     * Remove an arena.
+     * The arena must be an instance of {@link ManagedArena}.
      *
      * @param arena the arena
      */
     public void removeArena(Arena arena) {
-        Arena removed = arenaMap.remove(arena.getName());
-        if (removed != null) {
-            removed.clear();
+        if (!(arena instanceof ManagedArena)) {
+            throw new IllegalArgumentException("The arena must be an instance of ManagedArena");
+        }
+
+        //noinspection unchecked
+        T identifier = ((ManagedArena<T>) arena).getIdentifier();
+
+        if (arenaMap.remove(identifier) != null) {
+            arena.clear();
         }
     }
 
     /**
      * Remove an arena
      *
-     * @param name the name of the arena
+     * @param identifier the identifier
      */
-    public void removeArena(String name) {
-        Arena removed = arenaMap.remove(name);
+    public void removeArena(T identifier) {
+        Arena removed = arenaMap.remove(identifier);
         if (removed != null) {
             removed.clear();
         }
@@ -116,38 +151,16 @@ public abstract class ArenaManager extends FeatureUnit {
     /**
      * Create an arena
      *
-     * @param name             the name of the arena
-     * @param arenaClass       the class of the arena
+     * @param identifier       the identifier
+     * @param arenaCreator     the arena creator
      * @param onCreateConsumer the consumer that will be called when the arena is created
-     * @param <T>              the type of the arena
-     * @return the arena or empty if it cannot be created
+     * @param <A>              the type of the arena
+     * @return the created arena
      */
-    public <T extends Arena> Optional<T> createArena(String name, Class<T> arenaClass, Consumer<T> onCreateConsumer) {
-        T arena = null;
+    public <A extends Arena & ManagedArena<T>> Optional<A> createArena(T identifier, Function<T, A> arenaCreator, Consumer<A> onCreateConsumer) {
+        if (containsArena(identifier)) return Optional.empty();
 
-        try {
-            Constructor<T> constructor = arenaClass.getConstructor(String.class, this.getClass());
-            arena = constructor.newInstance(name, this);
-        } catch (Exception ignored) {
-            // IGNORED
-        }
-
-        try {
-            Constructor<T> constructor = arenaClass.getConstructor(String.class, FeatureUnit.class);
-            arena = constructor.newInstance(name, this);
-        } catch (Exception ignored) {
-            // IGNORED
-        }
-
-        if (arena == null) {
-            try {
-                Constructor<T> constructor = arenaClass.getConstructor(String.class);
-                arena = constructor.newInstance(name);
-            } catch (Exception ignored) {
-                // IGNORED
-            }
-        }
-
+        A arena = arenaCreator.apply(identifier);
         if (arena == null) return Optional.empty();
 
         onCreateConsumer.accept(arena);
