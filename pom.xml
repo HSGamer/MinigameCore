@@ -47,6 +47,7 @@
         <module>feature</module>
         <module>bukkit</module>
         <module>bukkit-simple</module>
+        <module>bukkit-minelib</module>
         <module>standalone</module>
     </modules>
 
