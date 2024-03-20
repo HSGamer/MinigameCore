@@ -137,7 +137,7 @@
         </profile>
 
         <profile>
-            <id>sonatype</id>
+            <id>central</id>
 
             <build>
                 <plugins>
