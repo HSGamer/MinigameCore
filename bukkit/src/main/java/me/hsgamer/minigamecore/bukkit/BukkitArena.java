@@ -30,13 +30,6 @@ public abstract class BukkitArena extends Arena {
         super(parent);
     }
 
-    /**
-     * Does the arena run asynchronously?
-     *
-     * @return true if it does
-     */
-    public abstract boolean isAsync();
-
     @Override
     protected boolean callStateChanged(GameState oldStage, GameState newStage) {
         ArenaChangeStateEvent event = new ArenaChangeStateEvent(this, oldStage, newStage);
