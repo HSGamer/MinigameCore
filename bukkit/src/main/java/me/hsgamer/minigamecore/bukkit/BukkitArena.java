@@ -30,6 +30,15 @@ public abstract class BukkitArena extends Arena {
         super(parent);
     }
 
+    /**
+     * Whether the task is async or not. Default is true
+     *
+     * @return true if the task is async
+     */
+    public boolean isAsync() {
+        return true;
+    }
+
     @Override
     protected boolean callStateChanged(GameState oldStage, GameState newStage) {
         ArenaChangeStateEvent event = new ArenaChangeStateEvent(this, oldStage, newStage);

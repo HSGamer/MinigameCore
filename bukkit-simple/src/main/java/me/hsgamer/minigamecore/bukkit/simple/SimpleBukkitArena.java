@@ -34,15 +34,6 @@ public class SimpleBukkitArena extends BukkitArena implements TimePeriod {
         super(parent);
     }
 
-    /**
-     * Whether the task is async or not. Default is true
-     *
-     * @return true if the task is async
-     */
-    protected boolean isAsync() {
-        return true;
-    }
-
     @Override
     public long getDelay() {
         return 20;
