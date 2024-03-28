@@ -12,7 +12,7 @@
     <artifactId>minigamecore-bukkit-minelib</artifactId>
 
     <properties>
-        <minelib.version>1.2.0</minelib.version>
+        <minelib.version>1.2.1</minelib.version>
     </properties>
 
     <repositories>
