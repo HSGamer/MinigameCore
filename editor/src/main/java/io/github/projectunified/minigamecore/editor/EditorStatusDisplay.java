@@ -78,10 +78,6 @@ public abstract class EditorStatusDisplay<B, S, T> {
      * @return the preprocessed object
      */
     protected Object preprocessValue(Object value, Editor<?> editor) {
-        while (value instanceof Editor<?>) {
-            Editor<?> subEditor = (Editor<?>) value;
-            value = subEditor.status();
-        }
         return value;
     }
 
@@ -103,6 +99,11 @@ public abstract class EditorStatusDisplay<B, S, T> {
             if (preprocessedValue != value) {
                 deque.addFirst(new Entry(level, entry.key(), preprocessedValue, entry.fromCollection()));
                 continue;
+            }
+
+            if (value instanceof Editor<?>) {
+                Editor<?> subEditor = (Editor<?>) value;
+                deque.addFirst(new Entry(level, entry.key(), subEditor.status(), false));
             }
 
             S section = newSection(builder, level);
