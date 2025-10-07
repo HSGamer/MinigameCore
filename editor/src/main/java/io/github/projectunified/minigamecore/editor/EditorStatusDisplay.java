@@ -106,7 +106,7 @@ public abstract class EditorStatusDisplay<B, S, T> {
             }
 
             S section = newSection(builder, level);
-            
+
             appendKey(section, entry.key(), entry.fromCollection());
             if (value instanceof Collection<?>) {
                 Collection<?> collection = (Collection<?>) value;
