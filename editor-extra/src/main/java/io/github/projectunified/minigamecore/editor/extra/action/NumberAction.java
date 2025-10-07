@@ -53,9 +53,11 @@ public abstract class NumberAction implements EditorAction {
         if (args.length < 1) {
             return actor.sendUsage(this);
         }
+        String value = args[0];
         try {
-            return execute(actor, Double.parseDouble(args[0]), Arrays.copyOfRange(args, 1, args.length));
+            return execute(actor, Double.parseDouble(value), Arrays.copyOfRange(args, 1, args.length));
         } catch (NumberFormatException e) {
+            actor.sendMessage("Invalid Number: " + value, false);
             return false;
         }
     }
