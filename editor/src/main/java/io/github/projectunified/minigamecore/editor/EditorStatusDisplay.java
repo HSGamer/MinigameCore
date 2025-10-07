@@ -22,17 +22,10 @@ public abstract class EditorStatusDisplay<B, S, T> {
      * Create a new section
      *
      * @param builder the builder
+     * @param level   the section level
      * @return the section
      */
-    protected abstract S newSection(B builder);
-
-    /**
-     * Add padding to the section
-     *
-     * @param section the section
-     * @param level   the padding level
-     */
-    protected abstract void appendPadding(S section, int level);
+    protected abstract S newSection(B builder, int level);
 
     /**
      * Add key to the section
@@ -112,9 +105,8 @@ public abstract class EditorStatusDisplay<B, S, T> {
                 continue;
             }
 
-            S section = newSection(builder);
-
-            appendPadding(section, level);
+            S section = newSection(builder, level);
+            
             appendKey(section, entry.key(), entry.fromCollection());
             if (value instanceof Collection<?>) {
                 Collection<?> collection = (Collection<?>) value;
