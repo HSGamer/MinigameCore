@@ -4,27 +4,35 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
+/**
+ * The editor that handles a list
+ *
+ * @param <T> the type of the element in the exported list
+ */
+public abstract class ListEditor<T> implements Editor<List<T>> {
     private final List<T> list = new ArrayList<>();
-    private final Map<String, EditorAction<A>> actionMap;
+    private final Map<String, EditorAction> actionMap;
 
-    public ListEditor() {
+    /**
+     * Create a new editor
+     */
+    protected ListEditor() {
         this.actionMap = new HashMap<>();
-        this.actionMap.put("add", new EditorAction<A>() {
+        this.actionMap.put("add", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 T value = create(actor, args);
                 if (value == null) {
-                    sendMessage(actor, "Cannot create (" + Arrays.toString(args) + ")");
+                    actor.sendMessage("Cannot create (" + Arrays.toString(args) + ")", false);
                     return false;
                 }
                 list.add(value);
-                sendMessage(actor, "Added (" + Arrays.toString(args) + ") at index " + (list.size() - 1));
+                actor.sendMessage("Added (" + Arrays.toString(args) + ") at index " + (list.size() - 1), true);
                 return true;
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 return createComplete(actor, args);
             }
 
@@ -38,9 +46,9 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 return createUsage();
             }
         });
-        this.actionMap.put("edit", new EditorAction<A>() {
+        this.actionMap.put("edit", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 if (args.length < 1) {
                     return false;
                 }
@@ -48,28 +56,28 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 try {
                     index = Integer.parseInt(args[0]);
                 } catch (NumberFormatException e) {
-                    sendMessage(actor, "Invalid index: " + args[0]);
+                    actor.sendMessage("Invalid index: " + args[0], false);
                     return false;
                 }
                 if (index < 0 || index >= list.size()) {
-                    sendMessage(actor, "Index out of bounds: " + index);
+                    actor.sendMessage("Index out of bounds: " + index, false);
                     return false;
                 }
                 T value = list.get(index);
                 T edited = edit(value, actor, Arrays.copyOfRange(args, 1, args.length));
                 if (edited == null) {
-                    sendMessage(actor, "Cannot edit (" + Arrays.toString(args) + ")");
+                    actor.sendMessage("Cannot edit (" + Arrays.toString(args) + ")", false);
                     return false;
                 }
                 if (edited != value) {
                     list.set(index, edited);
                 }
-                sendMessage(actor, "Edited (" + Arrays.toString(args) + ")");
+                actor.sendMessage("Edited (" + Arrays.toString(args) + ")", true);
                 return true;
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 if (args.length < 1) {
                     return Collections.emptyList();
                 }
@@ -101,9 +109,9 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 return "<index> " + editUsage();
             }
         });
-        this.actionMap.put("remove", new EditorAction<A>() {
+        this.actionMap.put("remove", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 if (args.length < 1) {
                     return false;
                 }
@@ -111,20 +119,20 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 try {
                     index = Integer.parseInt(args[0]);
                 } catch (NumberFormatException e) {
-                    sendMessage(actor, "Invalid index: " + args[0]);
+                    actor.sendMessage("Invalid index: " + args[0], false);
                     return false;
                 }
                 if (index < 0 || index >= list.size()) {
-                    sendMessage(actor, "Index out of bounds: " + index);
+                    actor.sendMessage("Index out of bounds: " + index, false);
                     return false;
                 }
                 list.remove(index);
-                sendMessage(actor, "Removed element at index " + index);
+                actor.sendMessage("Removed element at index " + index, true);
                 return true;
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 if (args.length == 1) {
                     return IntStream.range(0, list.size())
                             .mapToObj(String::valueOf)
@@ -143,9 +151,9 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 return "<index>";
             }
         });
-        this.actionMap.put("move", new EditorAction<A>() {
+        this.actionMap.put("move", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 if (args.length < 2) {
                     return false;
                 }
@@ -154,7 +162,7 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 try {
                     index = Integer.parseInt(args[0]);
                 } catch (NumberFormatException e) {
-                    sendMessage(actor, "Invalid index: " + args[0]);
+                    actor.sendMessage("Invalid index: " + args[0], false);
                     return false;
                 }
 
@@ -162,29 +170,29 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
                 try {
                     newIndex = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    sendMessage(actor, "Invalid new index: " + args[1]);
+                    actor.sendMessage("Invalid new index: " + args[1], false);
                     return false;
                 }
 
                 if (index < 0 || index >= list.size()) {
-                    sendMessage(actor, "Index out of bounds: " + index);
+                    actor.sendMessage("Index out of bounds: " + index, false);
                     return false;
                 }
 
                 if (newIndex < 0 || newIndex >= list.size()) {
-                    sendMessage(actor, "New index out of bounds: " + newIndex);
+                    actor.sendMessage("New index out of bounds: " + newIndex, false);
                     return false;
                 }
 
                 T value = list.get(index);
                 list.remove(index);
                 list.add(newIndex, value);
-                sendMessage(actor, "Moved element at index " + index + " to index " + newIndex);
+                actor.sendMessage("Moved element at index " + index + " to index " + newIndex, true);
                 return true;
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 if (args.length == 1 || args.length == 2) {
                     return IntStream.range(0, list.size())
                             .mapToObj(String::valueOf)
@@ -205,26 +213,63 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
         });
     }
 
-    protected abstract void sendMessage(A actor, String message);
+    /**
+     * Create a new element
+     *
+     * @param actor the actor
+     * @param args  the arguments
+     * @return the element or null if it cannot be created
+     */
+    protected abstract T create(EditorActor actor, String[] args);
 
-    protected abstract T create(A actor, String[] args);
+    /**
+     * Get the completion suggestions for actions that create a new element, given the arguments
+     *
+     * @param actor the action
+     * @param args  the argument
+     * @return the suggestions
+     */
+    protected abstract Collection<String> createComplete(EditorActor actor, String[] args);
 
-    protected abstract Collection<String> createComplete(A actor, String[] args);
-
+    /**
+     * Get the usage of the "create" action
+     *
+     * @return the usage
+     */
     protected String createUsage() {
         return "[args...]";
     }
 
-    protected abstract T edit(T data, A actor, String[] args);
+    /**
+     * Edit the current element
+     *
+     * @param data  the element
+     * @param actor the actor
+     * @param args  the arguments
+     * @return the element after editing
+     */
+    protected abstract T edit(T data, EditorActor actor, String[] args);
 
-    protected abstract Collection<String> editComplete(T data, A actor, String[] args);
+    /**
+     * Get the completion suggestions for actions that edit the current element, given the arguments
+     *
+     * @param actor the action
+     * @param args  the argument
+     * @return the suggestions
+     */
+    protected abstract Collection<String> editComplete(T data, EditorActor actor, String[] args);
 
+    /**
+     * Get the usage of the "edit" action
+     *
+     * @return the usage
+     */
     protected String editUsage() {
         return "[args...]";
     }
 
     @Override
-    public Map<String, EditorAction<A>> actions() {
+    public Map<String, EditorAction> actions() {
         return actionMap;
     }
 
@@ -239,12 +284,17 @@ public abstract class ListEditor<A, T> implements Editor<A, List<T>> {
     }
 
     @Override
-    public Optional<List<T>> export(A actor) {
+    public Optional<List<T>> export(EditorActor actor) {
         return Optional.of(this.list);
     }
 
+    /**
+     * Get the current list
+     *
+     * @return the list
+     */
     public List<T> list() {
-        return this.list;
+        return Collections.unmodifiableList(this.list);
     }
 
     @Override

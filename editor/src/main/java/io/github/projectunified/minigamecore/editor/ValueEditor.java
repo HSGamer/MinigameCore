@@ -2,22 +2,30 @@ package io.github.projectunified.minigamecore.editor;
 
 import java.util.*;
 
-public abstract class ValueEditor<A, T> implements Editor<A, T> {
-    private final Map<String, EditorAction<A>> actionMap;
+/**
+ * The editor that handles a value
+ *
+ * @param <T> the type of the value
+ */
+public abstract class ValueEditor<T> implements Editor<T> {
+    private final Map<String, EditorAction> actionMap;
     private T value;
 
+    /**
+     * Create a new value editor
+     */
     protected ValueEditor() {
         this.actionMap = new HashMap<>();
-        this.actionMap.put("set", new EditorAction<A>() {
+        this.actionMap.put("set", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 T value = create(actor, args);
                 if (value == null) {
-                    sendMessage(actor, "Cannot create (" + Arrays.toString(args) + ")");
+                    actor.sendMessage("Cannot create (" + Arrays.toString(args) + ")", false);
                     return false;
                 }
                 ValueEditor.this.value = value;
-                sendMessage(actor, "Set (" + Arrays.toString(args) + ")");
+                actor.sendMessage("Set (" + Arrays.toString(args) + ")", true);
                 return true;
             }
 
@@ -32,25 +40,25 @@ public abstract class ValueEditor<A, T> implements Editor<A, T> {
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 return createComplete(actor, args);
             }
         });
-        this.actionMap.put("edit", new EditorAction<A>() {
+        this.actionMap.put("edit", new EditorAction() {
             @Override
-            public boolean execute(A actor, String[] args) {
+            public boolean execute(EditorActor actor, String[] args) {
                 if (value == null) {
                     return false;
                 }
                 T edited = edit(value, actor, args);
                 if (edited == null) {
-                    sendMessage(actor, "Cannot edit (" + Arrays.toString(args) + ")");
+                    actor.sendMessage("Cannot edit (" + Arrays.toString(args) + ")", false);
                     return false;
                 }
                 if (edited != value) {
                     value = edited;
                 }
-                sendMessage(actor, "Edited (" + Arrays.toString(args) + ")");
+                actor.sendMessage("Edited (" + Arrays.toString(args) + ")", true);
                 return true;
             }
 
@@ -65,33 +73,70 @@ public abstract class ValueEditor<A, T> implements Editor<A, T> {
             }
 
             @Override
-            public Collection<String> complete(A actor, String[] args) {
+            public Collection<String> complete(EditorActor actor, String[] args) {
                 if (value == null) return Collections.emptyList();
                 return editComplete(value, actor, args);
             }
         });
     }
 
-    protected abstract void sendMessage(A actor, String message);
+    /**
+     * Create a new value
+     *
+     * @param actor the actor
+     * @param args  the arguments
+     * @return the value or null if it cannot be created
+     */
+    protected abstract T create(EditorActor actor, String[] args);
 
-    protected abstract T create(A actor, String[] args);
+    /**
+     * Get the completion suggestions for actions that create a new value, given the arguments
+     *
+     * @param actor the action
+     * @param args  the argument
+     * @return the suggestions
+     */
+    protected abstract Collection<String> createComplete(EditorActor actor, String[] args);
 
-    protected abstract Collection<String> createComplete(A actor, String[] args);
-
+    /**
+     * Get the usage of the "create" action
+     *
+     * @return the usage
+     */
     protected String createUsage() {
         return "[args...]";
     }
 
-    protected abstract T edit(T data, A actor, String[] args);
+    /**
+     * Edit the current value
+     *
+     * @param data  the value
+     * @param actor the actor
+     * @param args  the arguments
+     * @return the value after editing
+     */
+    protected abstract T edit(T data, EditorActor actor, String[] args);
 
-    protected abstract Collection<String> editComplete(T data, A actor, String[] args);
+    /**
+     * Get the completion suggestions for actions that edit the current value, given the arguments
+     *
+     * @param actor the action
+     * @param args  the argument
+     * @return the suggestions
+     */
+    protected abstract Collection<String> editComplete(T data, EditorActor actor, String[] args);
 
+    /**
+     * Get the usage of the "edit" action
+     *
+     * @return the usage
+     */
     protected String editUsage() {
         return "[args...]";
     }
 
     @Override
-    public Map<String, EditorAction<A>> actions() {
+    public Map<String, EditorAction> actions() {
         return actionMap;
     }
 
@@ -106,7 +151,7 @@ public abstract class ValueEditor<A, T> implements Editor<A, T> {
     }
 
     @Override
-    public Optional<T> export(A actor) {
+    public Optional<T> export(EditorActor actor) {
         return Optional.ofNullable(value);
     }
 

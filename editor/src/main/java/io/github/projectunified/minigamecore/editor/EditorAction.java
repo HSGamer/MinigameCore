@@ -3,19 +3,51 @@ package io.github.projectunified.minigamecore.editor;
 import java.util.Collection;
 import java.util.Collections;
 
-public interface EditorAction<A> {
-    boolean execute(A actor, String[] args);
+/**
+ * An action of the editor
+ */
+public interface EditorAction {
+    /**
+     * Execute the action
+     *
+     * @param actor the actor
+     * @param args  the arguments
+     * @return true if the action is executed successfully
+     */
+    boolean execute(EditorActor actor, String[] args);
 
+    /**
+     * Get the description of the action
+     *
+     * @return the description
+     */
     String description();
 
-    default Collection<String> complete(A actor, String[] args) {
+    /**
+     * Get the completion suggestions, given the arguments
+     *
+     * @param actor the action
+     * @param args  the argument
+     * @return the suggestions
+     */
+    default Collection<String> complete(EditorActor actor, String[] args) {
         return Collections.emptyList();
     }
 
+    /**
+     * Get the usage of the action
+     *
+     * @return the usage
+     */
     default String usage() {
         return "";
     }
 
+    /**
+     * Check if the action requires arguments
+     *
+     * @return true if it does
+     */
     default boolean requiresArgs() {
         return !usage().isEmpty();
     }

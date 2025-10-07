@@ -5,20 +5,45 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Editor<A, T> extends EditorAction<A> {
-    Map<String, EditorAction<A>> actions();
+/**
+ * The Editor
+ *
+ * @param <T> the type of the exported object
+ */
+public interface Editor<T> extends EditorAction {
+    /**
+     * The map of all available actions of the editor
+     *
+     * @return the action map
+     */
+    Map<String, EditorAction> actions();
 
+    /**
+     * Reset the editor
+     */
     void reset();
 
+    /**
+     * Get an object representing the status of the editor
+     *
+     * @return the status
+     */
     Object status();
 
-    Optional<T> export(A actor);
+    /**
+     * Export the object from the editor
+     *
+     * @param actor the actor
+     * @return the object if it's exported successfully, otherwise empty
+     */
+    Optional<T> export(EditorActor actor);
 
+    /**
+     * Migrate from the object
+     *
+     * @param data the object
+     */
     void migrate(T data);
-
-    default boolean sendActionUsage(A actor) {
-        return false;
-    }
 
     @Override
     default String description() {
@@ -31,16 +56,16 @@ public interface Editor<A, T> extends EditorAction<A> {
     }
 
     @Override
-    default Collection<String> complete(A actor, String[] args) {
+    default Collection<String> complete(EditorActor actor, String[] args) {
         if (args.length == 0) {
             return Collections.emptyList();
         }
-        Map<String, EditorAction<A>> actions = actions();
+        Map<String, EditorAction> actions = actions();
         if (args.length == 1) {
             return actions.keySet();
         }
         String actionName = args[0];
-        EditorAction<A> action = actions.get(actionName);
+        EditorAction action = actions.get(actionName);
         if (action == null) {
             return Collections.emptyList();
         }
@@ -49,12 +74,13 @@ public interface Editor<A, T> extends EditorAction<A> {
         return action.complete(actor, subArgs);
     }
 
-    default boolean execute(A actor, String[] args) {
+    @Override
+    default boolean execute(EditorActor actor, String[] args) {
         if (args.length == 0) {
-            return sendActionUsage(actor);
+            return actor.sendUsage(this);
         }
         String command = args[0];
-        EditorAction<A> action = actions().get(command);
+        EditorAction action = actions().get(command);
         if (action == null) {
             return false;
         }

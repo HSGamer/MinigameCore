@@ -3,25 +3,103 @@ package io.github.projectunified.minigamecore.editor;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public abstract class EditorStatusDisplay<B, T> {
+/**
+ * The helper class to handle editor status
+ *
+ * @param <B> the builder
+ * @param <S> the section
+ * @param <T> the object that is built from the builder
+ */
+public abstract class EditorStatusDisplay<B, S, T> {
+    /**
+     * Create a new builder
+     *
+     * @return the builder
+     */
     protected abstract B newBuilder();
 
-    protected abstract void appendPadding(B builder, int level);
+    /**
+     * Create a new section
+     *
+     * @param builder the builder
+     * @return the section
+     */
+    protected abstract S newSection(B builder);
 
-    protected abstract void appendKey(B builder, String key, boolean fromCollection);
+    /**
+     * Add padding to the section
+     *
+     * @param section the section
+     * @param level   the padding level
+     */
+    protected abstract void appendPadding(S section, int level);
 
-    protected abstract void appendSize(B builder, int size);
+    /**
+     * Add key to the section
+     *
+     * @param section        the section
+     * @param key            the key
+     * @param fromCollection whether the key is from a collection
+     */
+    protected abstract void appendKey(S section, String key, boolean fromCollection);
 
-    protected abstract void appendValue(B builder, Object value, int level, Editor<?, ?> editor);
+    /**
+     * Add size to the section
+     *
+     * @param section the section
+     * @param size    the size
+     */
+    protected abstract void appendSize(S section, int size);
 
+    /**
+     * Add value to the section
+     *
+     * @param section the section
+     * @param value   the value
+     * @param editor  the current editor
+     */
+    protected abstract void appendValue(S section, Object value, Editor<?> editor);
+
+    /**
+     * Add section to the builder
+     *
+     * @param section the section
+     * @param builder the builder
+     * @return the new builder
+     */
+    protected abstract B addToBuilder(S section, B builder);
+
+    /**
+     * Build the final object from the builder
+     *
+     * @param builder the builder
+     * @return the object
+     */
     protected abstract T build(B builder);
 
-    protected Object preprocessValue(Object value, Editor<?, ?> editor) {
+    /**
+     * Preprocess the editor value
+     *
+     * @param value  the value
+     * @param editor the editor
+     * @return the preprocessed object
+     */
+    protected Object preprocessValue(Object value, Editor<?> editor) {
+        while (value instanceof Editor<?>) {
+            Editor<?> subEditor = (Editor<?>) value;
+            value = subEditor.status();
+        }
         return value;
     }
 
-    public List<T> display(Editor<?, ?> editor) {
-        List<T> list = new ArrayList<>();
+    /**
+     * Display the editor by converting the editor status to an object
+     *
+     * @param editor the editor
+     * @return the status object
+     */
+    public T display(Editor<?> editor) {
+        B builder = newBuilder();
         Deque<Entry> deque = new ArrayDeque<>();
         deque.addFirst(new Entry(0, "ROOT", editor, false));
         while (!deque.isEmpty()) {
@@ -34,17 +112,13 @@ public abstract class EditorStatusDisplay<B, T> {
                 continue;
             }
 
-            while (value instanceof Editor<?, ?>) {
-                Editor<?, ?> subEditor = (Editor<?, ?>) value;
-                value = subEditor.status();
-            }
+            S section = newSection(builder);
 
-            B builder = newBuilder();
-            appendPadding(builder, level);
-            appendKey(builder, entry.key(), entry.fromCollection());
+            appendPadding(section, level);
+            appendKey(section, entry.key(), entry.fromCollection());
             if (value instanceof Collection<?>) {
                 Collection<?> collection = (Collection<?>) value;
-                appendSize(builder, collection.size());
+                appendSize(section, collection.size());
                 List<Object> copyList = new ArrayList<>(collection);
                 for (int i = copyList.size() - 1; i >= 0; i--) {
                     Object o = copyList.get(i);
@@ -52,14 +126,14 @@ public abstract class EditorStatusDisplay<B, T> {
                 }
             } else if (value.getClass().isArray()) {
                 int length = Array.getLength(value);
-                appendSize(builder, length);
+                appendSize(section, length);
                 for (int i = length - 1; i >= 0; i--) {
                     Object o = Array.get(value, i);
                     deque.addFirst(new Entry(level + 1, Integer.toString(i), o, true));
                 }
             } else if (value instanceof Map<?, ?>) {
                 Map<?, ?> subMap = (Map<?, ?>) value;
-                appendSize(builder, subMap.size());
+                appendSize(section, subMap.size());
                 List<Map.Entry<?, ?>> copyList = new ArrayList<>(subMap.entrySet());
                 for (int i = subMap.size() - 1; i >= 0; i--) {
                     Map.Entry<?, ?> o = copyList.get(i);
@@ -69,11 +143,11 @@ public abstract class EditorStatusDisplay<B, T> {
                 Map.Entry<?, ?> subEntry = (Map.Entry<?, ?>) value;
                 deque.addFirst(new Entry(level + 1, Objects.toString(subEntry.getKey()), subEntry.getValue(), false));
             } else {
-                appendValue(builder, value, level, editor);
+                appendValue(section, value, editor);
             }
-            list.add(build(builder));
+            builder = addToBuilder(section, builder);
         }
-        return list;
+        return build(builder);
     }
 
     private static final class Entry {
@@ -119,15 +193,6 @@ public abstract class EditorStatusDisplay<B, T> {
         @Override
         public int hashCode() {
             return Objects.hash(level, key, value, fromCollection);
-        }
-
-        @Override
-        public String toString() {
-            return "Entry[" +
-                    "level=" + level + ", " +
-                    "key=" + key + ", " +
-                    "value=" + value + ", " +
-                    "fromCollection=" + fromCollection + ']';
         }
     }
 }
