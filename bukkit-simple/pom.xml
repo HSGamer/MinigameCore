@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>me.hsgamer</groupId>
+        <groupId>io.github.projectunified</groupId>
         <artifactId>minigamecore</artifactId>
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>minigamecore-bukkit-simple</artifactId>
+    <name>MinigameCore Bukkit - Simple</name>
 
     <repositories>
         <repository>
@@ -26,7 +27,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.hsgamer</groupId>
+            <groupId>io.github.projectunified</groupId>
             <artifactId>minigamecore-bukkit</artifactId>
             <version>${project.version}</version>
         </dependency>

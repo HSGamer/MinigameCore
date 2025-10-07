@@ -4,19 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.hsgamer</groupId>
+    <groupId>io.github.projectunified</groupId>
     <artifactId>minigamecore</artifactId>
     <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>MinigameCore</name>
     <description>A core library for minigame development</description>
-    <url>https://github.com/HSGamer/MinigameCore</url>
+    <url>https://github.com/ProjectUnified/MinigameCore</url>
 
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://github.com/HSGamer/MinigameCore/blob/master/LICENSE</url>
+            <url>https://github.com/ProjectUnified/MinigameCore/blob/master/LICENSE</url>
         </license>
     </licenses>
 
@@ -30,13 +30,13 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/HSGamer/MinigameCore/issues</url>
+        <url>https://github.com/ProjectUnified/MinigameCore/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/HSGamer/MinigameCore.git</connection>
-        <developerConnection>scm:git:git@github.com:HSGamer/MinigameCore.git</developerConnection>
-        <url>https://github.com/HSGamer/MinigameCore</url>
+        <connection>scm:git:https://github.com/ProjectUnified/MinigameCore.git</connection>
+        <developerConnection>scm:git:git@github.com:ProjectUnified/MinigameCore.git</developerConnection>
+        <url>https://github.com/ProjectUnified/MinigameCore</url>
     </scm>
 
     <modules>
@@ -101,44 +101,7 @@
 
     <profiles>
         <profile>
-            <id>jenkins</id>
-            <activation>
-                <property>
-                    <name>env.JENKINS_HOME</name>
-                </property>
-            </activation>
-
-            <distributionManagement>
-                <repository>
-                    <id>codemc-releases</id>
-                    <url>https://repo.codemc.io/repository/maven-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>codemc-snapshots</id>
-                    <url>https://repo.codemc.io/repository/maven-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>github</id>
-            <activation>
-                <property>
-                    <name>env.GITHUB_WORKFLOW</name>
-                </property>
-            </activation>
-
-            <distributionManagement>
-                <repository>
-                    <id>github</id>
-                    <name>GitHub Packages</name>
-                    <url>https://maven.pkg.github.com/HSGamer/MinigameCore</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-
-        <profile>
             <id>central</id>
-
             <build>
                 <plugins>
                     <plugin>
