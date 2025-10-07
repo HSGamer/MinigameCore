@@ -5,6 +5,10 @@ io.github.projectunified.minigamecore.bukkit.extra
 io.github.projectunified.minigamecore.bukkit.minelib
 io.github.projectunified.minigamecore.bukkit.simple
 io.github.projectunified.minigamecore.editor
+io.github.projectunified.minigamecore.editor.extra
+io.github.projectunified.minigamecore.editor.extra.action
+io.github.projectunified.minigamecore.editor.extra.editor
+io.github.projectunified.minigamecore.editor.extra.status
 io.github.projectunified.minigamecore.extra
 io.github.projectunified.minigamecore.feature
 io.github.projectunified.minigamecore.manager
