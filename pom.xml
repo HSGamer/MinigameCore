@@ -50,6 +50,7 @@
         <module>bukkit-minelib</module>
         <module>standalone</module>
         <module>editor</module>
+        <module>editor-extra</module>
     </modules>
 
     <properties>

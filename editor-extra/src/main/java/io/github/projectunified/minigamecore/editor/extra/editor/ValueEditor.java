@@ -1,4 +1,8 @@
-package io.github.projectunified.minigamecore.editor;
+package io.github.projectunified.minigamecore.editor.extra.editor;
+
+import io.github.projectunified.minigamecore.editor.Editor;
+import io.github.projectunified.minigamecore.editor.EditorAction;
+import io.github.projectunified.minigamecore.editor.EditorActor;
 
 import java.util.*;
 

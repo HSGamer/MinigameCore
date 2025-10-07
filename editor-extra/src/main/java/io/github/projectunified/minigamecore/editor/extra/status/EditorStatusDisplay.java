@@ -1,4 +1,6 @@
-package io.github.projectunified.minigamecore.editor;
+package io.github.projectunified.minigamecore.editor.extra.status;
+
+import io.github.projectunified.minigamecore.editor.Editor;
 
 import java.lang.reflect.Array;
 import java.util.*;
