@@ -104,8 +104,8 @@ public abstract class EditorStatusDisplay<B, S, T> {
             }
 
             if (value instanceof Editor<?>) {
-                Editor<?> subEditor = (Editor<?>) value;
-                deque.addFirst(new Entry(level, entry.key(), subEditor.status(), false));
+                deque.addFirst(new Entry(level, entry.key(), ((Editor<?>) value).status(), false));
+                continue;
             }
 
             S section = newSection(builder, level);
